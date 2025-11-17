@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FixMyCar AI — Diagnóstico instantáneo</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>FixMyCar AI</h1>
+      <p>Diagnóstico automotriz instantáneo. Describe el síntoma y obtén hipótesis y pasos.</p>
+    </header>
+
+    <main>
+      <div id="chat" class="chat"></div>
+
+      <form id="inputForm" class="inputForm">
+        <input id="vehicle" placeholder="Marca, modelo, año (ej: Ford Lobo 2005 5.4)" required />
+        <input id="symptom" placeholder="Describe el síntoma (ej: no arranca, hace clic)" required />
+        <button type="submit">Diagnosticar</button>
+      </form>
+
+      <div class="footer-note">
+        <small>Informe orientativo. No sustituye a un técnico certificado. Consulta términos y condiciones.</small>
+      </div>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
