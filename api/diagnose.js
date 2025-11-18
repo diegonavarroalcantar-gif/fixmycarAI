@@ -1,53 +1,68 @@
-// api/diagnose.js (Vercel - Node serverless)
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // Solo permitir POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
+    // Captura del body
     const { message } = req.body || {};
-    if (!message) return res.status(400).json({ error: 'message required' });
 
-    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-    if (!OPENAI_API_KEY) return res.status(500).json({ error: 'OpenAI key not configured' });
+    if (!message) {
+      return res.status(400).json({ error: "No symptom message received" });
+    }
 
-    const prompt = `Eres FixMyCarAI, un asistente experto en diagnóstico automotriz. Usuario: "${message}"\nDevuelve JSON con: hypotheses (array de strings), actions (array de strings), profeco_alert (string|null).`;
+    const API_KEY = process.env.OPENAI_API_KEY;
 
-    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    if (!API_KEY) {
+      return res.status(500).json({ error: "OPENAI_API_KEY missing in Vercel" });
+    }
+
+    const prompt = `
+Eres FixMyCarAI, un experto en fallas automotrices. Analiza este síntoma:
+
+"${message}"
+
+Devuelve SIEMPRE un JSON EXACTO así:
+
+{
+ "hypotheses": ["causa1", "causa2"],
+ "actions": ["accion1", "accion2"],
+ "profeco_alert": null
+}
+    `.trim();
+
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        "Authorization": `Bearer ${API_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
-          { role: 'system', content: 'Eres un asistente técnico automotriz. Responde sólo con JSON cuando se solicita.' },
-          { role: 'user', content: prompt }
+          { role: "system", content: "Eres FixMyCarAI." },
+          { role: "user", content: prompt }
         ],
         temperature: 0.1,
-        max_tokens: 500
+        max_tokens: 300
       })
     });
 
-    if (!resp.ok) {
-      const txt = await resp.text();
-      console.error('OpenAI error', resp.status, txt);
-      return res.status(502).json({ error: 'OpenAI API error', detail: txt });
-    }
+    const result = await openaiRes.json();
 
-    const data = await resp.json();
-    const text = data.choices?.[0]?.message?.content || '';
+    let content = result?.choices?.[0]?.message?.content || "";
 
-    // Intento de parsear JSON desde la respuesta del modelo
-    let parsed = { hypotheses: [], actions: [], profeco_alert: null };
+    // Intentamos parsear JSON
     try {
-      parsed = JSON.parse(text);
-    } catch (err) {
-      // Si no es JSON válido, retornamos el texto crudo para depuración
-      return res.status(200).json({ raw: text });
+      const parsed = JSON.parse(content);
+      return res.status(200).json(parsed);
+    } catch {
+      // Si no es JSON, enviamos raw
+      return res.status(200).json({ raw: content });
     }
 
-    return res.status(200).json(parsed);
   } catch (err) {
-    console.error('handler error', err);
-    return res.status(500).json({ error: 'Server error', detail: err.message });
+    return res.status(500).json({ error: err.message });
   }
 }
