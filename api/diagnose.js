@@ -1,38 +1,52 @@
+import { buffer } from "micro";
+
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};
+
 export default async function handler(req, res) {
-  // Solo permitir POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // Leer body manualmente (garantizado en Vercel)
+  const rawBody = (await buffer(req)).toString();
+  let body = {};
+  
   try {
-    // Captura del body
-    const { message } = req.body || {};
+    body = JSON.parse(rawBody);
+  } catch (e) {
+    return res.status(400).json({ error: "Invalid JSON body" });
+  }
 
-    if (!message) {
-      return res.status(400).json({ error: "No symptom message received" });
-    }
+  const { message } = body;
 
-    const API_KEY = process.env.OPENAI_API_KEY;
+  if (!message) {
+    return res.status(400).json({ error: "No message provided" });
+  }
 
-    if (!API_KEY) {
-      return res.status(500).json({ error: "OPENAI_API_KEY missing in Vercel" });
-    }
+  const API_KEY = process.env.OPENAI_API_KEY;
+  if (!API_KEY) {
+    return res.status(500).json({ error: "OPENAI_API_KEY missing" });
+  }
 
-    const prompt = `
-Eres FixMyCarAI, un experto en fallas automotrices. Analiza este síntoma:
+  const prompt = `
+Eres FixMyCarAI, experto en diagnóstico automotriz. Analiza este síntoma:
 
 "${message}"
 
-Devuelve SIEMPRE un JSON EXACTO así:
-
+Devuelve SIEMPRE un JSON EXACTO:
 {
  "hypotheses": ["causa1", "causa2"],
  "actions": ["accion1", "accion2"],
  "profeco_alert": null
 }
-    `.trim();
+  `.trim();
 
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+  try {
+    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${API_KEY}`,
@@ -49,17 +63,14 @@ Devuelve SIEMPRE un JSON EXACTO así:
       })
     });
 
-    const result = await openaiRes.json();
+    const json = await openaiResponse.json();
+    const text = json?.choices?.[0]?.message?.content || "";
 
-    let content = result?.choices?.[0]?.message?.content || "";
-
-    // Intentamos parsear JSON
     try {
-      const parsed = JSON.parse(content);
+      const parsed = JSON.parse(text);
       return res.status(200).json(parsed);
     } catch {
-      // Si no es JSON, enviamos raw
-      return res.status(200).json({ raw: content });
+      return res.status(200).json({ raw: text });
     }
 
   } catch (err) {
