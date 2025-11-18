@@ -30,20 +30,41 @@ form.addEventListener('submit', async (e) => {
 
     });
     const data = await res.json();
-    if(res.ok) {
-      // Expect JSON structure from the API
-      const out = [];
-      if(data.hypotheses && data.hypotheses.length){
-        out.push('<strong>Hipótesis:</strong>');
-        out.push('<ul>' + data.hypotheses.map(h=>`<li>${h}</li>`).join('') + '</ul>');
-      }
-      if(data.actions && data.actions.length){
-        out.push('<strong>Acciones recomendadas:</strong>');
-        out.push('<ol>' + data.actions.map(a=>`<li>${a}</li>`).join('') + '</ol>');
-      }
-      if(data.profeco_alert){
-        out.push(`<div style="background:#2b2b2b;padding:8px;border-radius:6px;margin-top:8px"><strong>Alerta PROFECO:</strong> ${data.profeco_alert}</div>`);
-      }
+
+// Maneja varios formatos de respuesta del backend:
+let botMessage = "";
+
+// Caso 1: JSON estructurado desde diagnose.js
+if (data.hypotheses || data.actions || data.profeco_alert) {
+  botMessage += "<strong>Posibles causas:</strong><br>";
+  (data.hypotheses || []).forEach(h => botMessage += "• " + h + "<br>");
+
+  botMessage += "<br><strong>Acciones recomendadas:</strong><br>";
+  (data.actions || []).forEach(a => botMessage += "• " + a + "<br>");
+
+  if (data.profeco_alert) {
+    botMessage += "<br><strong>Alerta PROFECO:</strong><br>" + data.profeco_alert + "<br>";
+  }
+}
+
+// Caso 2: Si el modelo envió RAW texto
+else if (data.raw) {
+  botMessage = data.raw;
+}
+
+// Caso 3: Si solo hay 'reply'
+else if (data.reply) {
+  botMessage = data.reply;
+}
+
+// Caso 4: Si nada coincide, mostrar todo el JSON
+else {
+  botMessage = JSON.stringify(data, null, 2);
+}
+
+// Insertar en pantalla
+addMessage("bot", botMessage);
+
       appendMessage(out.join(''), 'bot');
     } else {
       appendMessage('Error en el servidor: ' + (data.error || res.statusText), 'bot');
