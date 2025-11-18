@@ -1,56 +1,39 @@
-import { buffer } from "micro";
-
-export const config = {
-  api: {
-    bodyParser: false
-  }
-};
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Leer body manualmente (garantizado en Vercel)
-  const rawBody = (await buffer(req)).toString();
-  let body = {};
-  
   try {
-    body = JSON.parse(rawBody);
-  } catch (e) {
-    return res.status(400).json({ error: "Invalid JSON body" });
-  }
+    const { message } = req.body || {};
 
-  const { message } = body;
+    if (!message) {
+      return res.status(400).json({ error: "Missing symptom message" });
+    }
 
-  if (!message) {
-    return res.status(400).json({ error: "No message provided" });
-  }
+    const API_KEY = process.env.OPENAI_API_KEY;
+    if (!API_KEY) {
+      return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
+    }
 
-  const API_KEY = process.env.OPENAI_API_KEY;
-  if (!API_KEY) {
-    return res.status(500).json({ error: "OPENAI_API_KEY missing" });
-  }
-
-  const prompt = `
-Eres FixMyCarAI, experto en diagnóstico automotriz. Analiza este síntoma:
+    const prompt = `
+Eres FixMyCarAI. Analiza el siguiente síntoma automotriz:
 
 "${message}"
 
-Devuelve SIEMPRE un JSON EXACTO:
-{
- "hypotheses": ["causa1", "causa2"],
- "actions": ["accion1", "accion2"],
- "profeco_alert": null
-}
-  `.trim();
+Devuelve SIEMPRE un JSON EXACTO con este formato:
 
-  try {
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+{
+  "hypotheses": ["causa1", "causa2"],
+  "actions": ["accion1", "accion2"],
+  "profeco_alert": null
+}
+    `.trim();
+
+    const openai = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
@@ -58,22 +41,23 @@ Devuelve SIEMPRE un JSON EXACTO:
           { role: "system", content: "Eres FixMyCarAI." },
           { role: "user", content: prompt }
         ],
-        temperature: 0.1,
-        max_tokens: 300
+        max_tokens: 400,
       })
     });
 
-    const json = await openaiResponse.json();
-    const text = json?.choices?.[0]?.message?.content || "";
+    const json = await openai.json();
+    const content = json?.choices?.[0]?.message?.content || "";
 
     try {
-      const parsed = JSON.parse(text);
+      // Intentamos parsear JSON válido
+      const parsed = JSON.parse(content);
       return res.status(200).json(parsed);
-    } catch {
-      return res.status(200).json({ raw: text });
+    } catch (e) {
+      // Si no es JSON, regresamos raw
+      return res.status(200).json({ raw: content });
     }
 
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 }
