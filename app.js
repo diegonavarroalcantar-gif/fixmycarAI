@@ -26,7 +26,8 @@ form.addEventListener('submit', async (e) => {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ message: symptom })
+     body: JSON.stringify({ message: symptom })
+
     });
     const data = await res.json();
     if(res.ok) {
