@@ -1,35 +1,95 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FixMyCar AI — Diagnóstico instantáneo</title>
-  <link rel="stylesheet" href="/style.css" />
+
+  <style>
+    body {
+      background: #101010;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    #diagnose-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #181818;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    textarea {
+      height: 80px;
+      resize: none;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #chat {
+      background: #181818;
+      padding: 15px;
+      border-radius: 8px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 15px;
+    }
+
+    .message.user {
+      text-align: right;
+    }
+
+    .msg-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <h1>FixMyCar AI</h1>
-      <p>Diagnóstico automotriz instantáneo. Describe el síntoma y obtén hipótesis y pasos.</p>
-    </header>
 
-    <main>
-      <div id="chat" class="chat"></div>
+  <h1>FixMyCar AI</h1>
 
-      <form id="inputForm" class="inputForm">
-        <input id="vehicle" placeholder="Marca, modelo, año (ej: Ford Lobo 2005 5.4)" required />
-        <input id="symptom" placeholder="Describe el síntoma (ej: no arranca, hace clic)" required />
-        <button type="submit">Diagnosticar</button>
-      </form>
+  <!-- FORMULARIO -->
+  <form id="diagnose-form">
+    <input id="vin" type="text" placeholder="Vehículo / VIN" />
+    <textarea id="symptoms" placeholder="Describe los síntomas del vehículo..."></textarea>
+    <button type="submit">Diagnosticar</button>
+  </form>
 
-      <div class="footer-note">
-        <small>Informe orientativo. No sustituye a un técnico certificado. Consulta términos y condiciones.</small>
-      </div>
-    </main>
-  </div>
+  <!-- CHAT -->
+  <div id="chat"></div>
 
-<script src="app.js"></script>
-
-
+  <!-- SCRIPT -->
+  <script src="app.js"></script>
 </body>
 </html>
