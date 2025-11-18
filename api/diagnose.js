@@ -16,35 +16,30 @@ export default async function handler(req, res) {
     }
 
     const prompt = `
-Eres FixMyCarAI, especialista automotriz profesional.
+Eres FixMyCarAI, especialista en diagnóstico automotriz.
 
-Usa tu conocimiento técnico, bases de datos automotrices globales 
-(NHTSA, TSBs, ASE, fallas comunes, campañas de servicio, recalls, reportes de usuarios),
-y en caso de existir, boletines PROFECO.
-
-Analiza:
-
-- VIN o modelo: "${vin || "No especificado"}"
-- Síntomas: "${message}"
-
-Devuelve EXCLUSIVAMENTE un JSON con este formato exacto:
+Debes devolver SIEMPRE un JSON con TODOS estos campos, sin omitir ninguno:
 
 {
-  "hypotheses": ["causa1", "causa2"],
-  "actions": ["accion1", "accion2"],
-  "common_failures": ["fallas típicas del modelo/motor"],
-  "tsbs": ["boletines técnicos relevantes"],
-  "recalls": ["recalls confirmados del modelo"],
-  "nhtsa_alerts": ["problemas reportados por usuarios y mecánicos"],
-  "profeco_alert": "texto o null"
+  "hypotheses": [],
+  "actions": [],
+  "common_failures": [],
+  "tsbs": [],
+  "recalls": [],
+  "nhtsa_alerts": [],
+  "profeco_alert": null
 }
 
-REGLAS IMPORTANTES:
-- NO escribas texto fuera del JSON.
-- Si el vehículo tiene datos incompletos, infiere por marca, modelo y motor.
-- PROFECO solo si existe un boletín real, si no existe: null.
-- NHTSA, TSB y fallas comunes SIEMPRE deben incluirse si existen para ese modelo o motor.
-- Sé preciso y técnico.
+Reglas:
+- NO puedes omitir campos.
+- Si no hay información real, devuelve listas vacías o "null".
+- "profeco_alert" solo puede ser string o null.
+- NO escribas nada fuera del JSON.
+- Usa conocimiento global: NHTSA, TSBs, reportes de usuarios, fallas comunes de la marca, motor y año.
+
+Datos a analizar:
+Vehículo/VIN: "${vin || "No especificado"}"
+Síntomas: "${message}"
     `.trim();
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -56,12 +51,12 @@ REGLAS IMPORTANTES:
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "Eres FixMyCarAI, experto en diagnóstico automotriz técnico." },
+          { role: "system", content: "Eres FixMyCarAI, experto automotriz técnico." },
           { role: "user", content: prompt }
         ],
         max_tokens: 700,
-        temperature: 0.2
-      }),
+        temperature: 0.1
+      })
     });
 
     const json = await response.json();
