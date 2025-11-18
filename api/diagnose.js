@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message } = req.body || {};
+    const { message, vin } = req.body || {};
 
     if (!message) {
       return res.status(400).json({ error: "Missing symptom message" });
@@ -16,20 +16,30 @@ export default async function handler(req, res) {
     }
 
     const prompt = `
-Eres FixMyCarAI. Analiza el siguiente síntoma automotriz:
+Eres FixMyCarAI, especialista automotriz.
 
-"${message}"
+Analiza únicamente esta información:
+- VIN o modelo: "${vin || "No especificado"}"
+- Síntomas: "${message}"
 
-Devuelve SIEMPRE un JSON EXACTO con este formato:
+Y devuelve **EXCLUSIVAMENTE** un JSON con este formato exacto:
 
 {
   "hypotheses": ["causa1", "causa2"],
   "actions": ["accion1", "accion2"],
-  "profeco_alert": null
+  "common_failures": ["falla común 1", "falla común 2"],
+  "recalls": ["recall o campaña de servicio relevante"],
+  "profeco_alert": "texto o null"
 }
+
+Reglas IMPORTANTES:
+- NO expliques nada fuera del JSON.
+- Usa conocimiento automotriz general y boletines públicos.
+- Si no hay datos reales de PROFECO para ese modelo, devuelve null.
+- Incluye fallas comunes típicas del modelo y motor.
     `.trim();
 
-    const openai = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${API_KEY}`,
@@ -38,26 +48,25 @@ Devuelve SIEMPRE un JSON EXACTO con este formato:
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "Eres FixMyCarAI." },
+          { role: "system", content: "Eres FixMyCarAI, experto en diagnóstico automotriz." },
           { role: "user", content: prompt }
         ],
-        max_tokens: 400,
-      })
+        max_tokens: 500,
+        temperature: 0.2
+      }),
     });
 
-    const json = await openai.json();
+    const json = await response.json();
     const content = json?.choices?.[0]?.message?.content || "";
 
     try {
-      // Intentamos parsear JSON válido
       const parsed = JSON.parse(content);
       return res.status(200).json(parsed);
-    } catch (e) {
-      // Si no es JSON, regresamos raw
+    } catch (err) {
       return res.status(200).json({ raw: content });
     }
 
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 }
