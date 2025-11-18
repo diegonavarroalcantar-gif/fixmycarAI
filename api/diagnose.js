@@ -16,27 +16,35 @@ export default async function handler(req, res) {
     }
 
     const prompt = `
-Eres FixMyCarAI, especialista automotriz.
+Eres FixMyCarAI, especialista automotriz profesional.
 
-Analiza únicamente esta información:
+Usa tu conocimiento técnico, bases de datos automotrices globales 
+(NHTSA, TSBs, ASE, fallas comunes, campañas de servicio, recalls, reportes de usuarios),
+y en caso de existir, boletines PROFECO.
+
+Analiza:
+
 - VIN o modelo: "${vin || "No especificado"}"
 - Síntomas: "${message}"
 
-Y devuelve **EXCLUSIVAMENTE** un JSON con este formato exacto:
+Devuelve EXCLUSIVAMENTE un JSON con este formato exacto:
 
 {
   "hypotheses": ["causa1", "causa2"],
   "actions": ["accion1", "accion2"],
-  "common_failures": ["falla común 1", "falla común 2"],
-  "recalls": ["recall o campaña de servicio relevante"],
+  "common_failures": ["fallas típicas del modelo/motor"],
+  "tsbs": ["boletines técnicos relevantes"],
+  "recalls": ["recalls confirmados del modelo"],
+  "nhtsa_alerts": ["problemas reportados por usuarios y mecánicos"],
   "profeco_alert": "texto o null"
 }
 
-Reglas IMPORTANTES:
-- NO expliques nada fuera del JSON.
-- Usa conocimiento automotriz general y boletines públicos.
-- Si no hay datos reales de PROFECO para ese modelo, devuelve null.
-- Incluye fallas comunes típicas del modelo y motor.
+REGLAS IMPORTANTES:
+- NO escribas texto fuera del JSON.
+- Si el vehículo tiene datos incompletos, infiere por marca, modelo y motor.
+- PROFECO solo si existe un boletín real, si no existe: null.
+- NHTSA, TSB y fallas comunes SIEMPRE deben incluirse si existen para ese modelo o motor.
+- Sé preciso y técnico.
     `.trim();
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -48,10 +56,10 @@ Reglas IMPORTANTES:
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: "Eres FixMyCarAI, experto en diagnóstico automotriz." },
+          { role: "system", content: "Eres FixMyCarAI, experto en diagnóstico automotriz técnico." },
           { role: "user", content: prompt }
         ],
-        max_tokens: 500,
+        max_tokens: 700,
         temperature: 0.2
       }),
     });
