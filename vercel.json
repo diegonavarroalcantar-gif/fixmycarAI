@@ -1,9 +1,0 @@
-{
-  "version": 2,
-  "functions": {
-    "api/diagnose.js": {
-      "runtime": "edge",
-      "maxDuration": 10
-    }
-  }
-}
