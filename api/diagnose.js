@@ -1,14 +1,12 @@
 // api/diagnose.js
-// FixMyCar.ai – Diagnóstico con IA + Enlaces automáticos a guías/videos/herramientas
-
-import OpenAI from "openai";
+// TOTALMENTE COMPATIBLE CON VERCEL EDGE
 
 export const config = {
   runtime: "edge"
 };
 
 // ---------------------------------------------
-// FUNCIÓN: MAPEOS AUTOMÁTICOS (guías / videos / herramientas)
+// MAPEOS AUTOMÁTICOS (guías / videos / herramientas)
 // ---------------------------------------------
 function getExtraContent(actions) {
   const guides = [];
@@ -17,9 +15,7 @@ function getExtraContent(actions) {
 
   const text = actions.join(" ").toLowerCase();
 
-  // ============================
-  // 1) Bobinas COP
-  // ============================
+  // Bobinas COP
   if (
     text.includes("bobina") ||
     text.includes("cop") ||
@@ -43,9 +39,7 @@ function getExtraContent(actions) {
     );
   }
 
-  // ============================
-  // 2) Bujías
-  // ============================
+  // Bujías
   if (text.includes("bujía") || text.includes("bujias") || text.includes("spark")) {
     guides.push({
       title: "Guía: Cómo cambiar bujías",
@@ -68,7 +62,7 @@ function getExtraContent(actions) {
 }
 
 // ---------------------------------------------
-// API PRINCIPAL – MODELO DE DIAGNÓSTICO
+// API PRINCIPAL — LLAMADA A OPENAI SIN SDK
 // ---------------------------------------------
 export default async function handler(req) {
   if (req.method !== "POST") {
@@ -77,45 +71,45 @@ export default async function handler(req) {
 
   try {
     const { message } = await req.json();
-
     if (!message) {
-      return new Response(
-        JSON.stringify({ error: "Faltan datos" }),
-        { status: 400 }
-      );
+      return Response.json({ error: "Faltan datos" }, { status: 400 });
     }
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
-
-    // 🔥 Prompt para diagnóstico estructurado
     const prompt = `
 Eres FixMyCarAI, un experto en diagnóstico automotriz.
 
-A partir de la descripción del usuario: "${message}"
+A partir de: "${message}"
 
-Genera un JSON *EXCLUSIVAMENTE* con estas claves:
+Genera SOLO este JSON:
 
 {
   "hypotheses": ["posible falla 1", "posible falla 2"],
   "actions": ["acción 1", "acción 2"],
-  "common_failures": ["falla común del modelo"],
-  "tsbs": ["boletín técnico relevante"],
-  "recalls": ["recall relevante"],
-  "nhtsa_alerts": ["alerta de seguridad NHTSA"]
+  "common_failures": ["falla común"],
+  "tsbs": ["boletín técnico"],
+  "recalls": ["recall"],
+  "nhtsa_alerts": ["alerta"]
 }
-    `;
+`;
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.3
+    // -------------- LLAMADA API OPENAI (EDGE SAFE) --------------
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3
+      })
     });
 
-    const raw = response.choices[0].message.content;
-    let parsed;
+    const data = await openaiRes.json();
+    const raw = data.choices?.[0]?.message?.content || "{}";
 
+    let parsed;
     try {
       parsed = JSON.parse(raw);
     } catch (e) {
@@ -130,7 +124,6 @@ Genera un JSON *EXCLUSIVAMENTE* con estas claves:
       };
     }
 
-    // Asegurar arrays
     const hypotheses = parsed.hypotheses || [];
     const actions = parsed.actions || [];
     const common_failures = parsed.common_failures || [];
@@ -138,10 +131,8 @@ Genera un JSON *EXCLUSIVAMENTE* con estas claves:
     const recalls = parsed.recalls || [];
     const nhtsa_alerts = parsed.nhtsa_alerts || [];
 
-    // Obtener contenido extra (guías/videos/herramientas)
     const extra = getExtraContent(actions);
 
-    // Respuesta final unificada
     return Response.json({
       hypotheses,
       actions,
@@ -155,8 +146,8 @@ Genera un JSON *EXCLUSIVAMENTE* con estas claves:
     });
 
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: "Server error", details: err.message }),
+    return Response.json(
+      { error: "Server error", details: err.message },
       { status: 500 }
     );
   }
