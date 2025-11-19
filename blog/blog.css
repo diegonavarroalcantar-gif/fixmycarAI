@@ -1,1 +1,36 @@
+body {
+  background: #020617;
+  color: #e5e7eb;
+  font-family: system-ui, sans-serif;
+  padding: 20px;
+  line-height: 1.6;
+}
 
+h1 {
+  color: #38bdf8;
+}
+
+h2 {
+  color: #e5e7eb;
+}
+
+a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.card {
+  background: #0f172a;
+  padding: 16px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+ul {
+  padding-left: 20px;
+}
