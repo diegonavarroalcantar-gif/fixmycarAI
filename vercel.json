@@ -1,6 +1,9 @@
 {
-  "version": 3,
-  "routes": [
-    { "src": "/api/diagnose", "dest": "api/diagnose.js" }
-  ]
+  "version": 2,
+  "functions": {
+    "api/diagnose.js": {
+      "runtime": "edge",
+      "maxDuration": 10
+    }
+  }
 }
