@@ -3,93 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FixMyCar AI — Diagnóstico instantáneo</title>
-
-  <style>
-    body {
-      background: #101010;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    #diagnose-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #181818;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-
-    input, textarea {
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      width: 100%;
-      font-size: 16px;
-    }
-
-    textarea {
-      height: 80px;
-      resize: none;
-    }
-
-    button {
-      background: #3b82f6;
-      color: white;
-      padding: 12px;
-      border-radius: 6px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #chat {
-      background: #181818;
-      padding: 15px;
-      border-radius: 8px;
-      max-height: 70vh;
-      overflow-y: auto;
-    }
-
-    .message {
-      margin-bottom: 15px;
-    }
-
-    .message.user {
-      text-align: right;
-    }
-
-    .msg-title {
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-  </style>
+  <title>FixMyCar AI — Diagnóstico inteligente</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo-circle">AI</div>
+        <div>
+          <h1>FixMyCar AI</h1>
+          <p>Diagnóstico inteligente de fallas automotrices</p>
+        </div>
+      </div>
+      <div class="header-tagline">
+        <span class="pill pill-green">Beta</span>
+        <span class="pill pill-blue">IA aplicada a tu vehículo</span>
+      </div>
+    </header>
 
-  <h1>FixMyCar AI</h1>
+    <!-- MAIN LAYOUT -->
+    <main class="layout">
+      <!-- PANEL IZQUIERDO: FORMULARIO -->
+      <section class="panel panel-form">
+        <h2>Describe el problema</h2>
+        <p class="panel-sub">
+          Ingresa tu vehículo y los síntomas. FixMyCar AI te dará un diagnóstico probable,
+          fallas comunes, campañas de servicio y alertas relevantes.
+        </p>
 
-  <!-- FORMULARIO -->
-  <form id="diagnose-form">
-    <input id="vin" type="text" placeholder="Vehículo / VIN" />
-    <textarea id="symptoms" placeholder="Describe los síntomas del vehículo..."></textarea>
-    <button type="submit">Diagnosticar</button>
-  </form>
+        <form id="diagnose-form" class="form">
+          <label class="field">
+            <span class="field-label">Vehículo / VIN</span>
+            <input id="vin" type="text" placeholder="Ej. Ford Lobo 2005 Tritón 5.4" />
+          </label>
 
-  <!-- CHAT -->
-  <div id="chat"></div>
+          <label class="field">
+            <span class="field-label">Síntomas</span>
+            <textarea id="symptoms" placeholder="Ej. Se apaga al acelerar, pierde fuerza en subidas, check engine encendido..."></textarea>
+          </label>
 
-  <!-- SCRIPT -->
+          <button type="submit" class="btn-primary">
+            Diagnosticar ahora
+          </button>
+
+          <p class="disclaimer">
+            ⚠️ FixMyCar AI no sustituye una revisión física. Usa esta orientación como guía
+            para hablar con tu mecánico o tomar decisiones informadas.
+          </p>
+        </form>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <h3>¿Qué analiza?</h3>
+            <ul>
+              <li>✔ Síntomas descritos por el usuario</li>
+              <li>✔ Fallas típicas del modelo y motor</li>
+              <li>✔ Recalls y boletines técnicos conocidos</li>
+              <li>✔ Patrones de fallas reportadas por usuarios</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>Pronto:</h3>
+            <ul>
+              <li>🔧 Reporte descargable en PDF</li>
+              <li>📚 Modo escuela / taller</li>
+              <li>🛒 Recomendación de refacciones con enlace de compra</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL DERECHO: CHAT / RESULTADOS -->
+      <section class="panel panel-chat">
+        <h2>Resultados del diagnóstico</h2>
+        <p class="panel-sub">
+          Aquí verás el análisis de FixMyCar AI: causas probables, acciones sugeridas,
+          fallas comunes del modelo, TSBs, recalls y alertas.
+        </p>
+
+        <div id="chat" class="chat"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>FixMyCar AI · Proyecto en desarrollo</span>
+      <span class="footer-note">Esta herramienta se irá actualizando con más información técnica y bases de datos reales.</span>
+    </footer>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
