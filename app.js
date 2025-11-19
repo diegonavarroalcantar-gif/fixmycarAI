@@ -6,7 +6,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     return;
   }
 
-  document.getElementById("result").innerHTML = "Analizando...";
+  document.getElementById("result").innerHTML = "<p>Analizando...</p>";
 
   try {
     const response = await fetch("/api/diagnose", {
@@ -19,7 +19,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
     if (data.error) {
       document.getElementById("result").innerHTML =
-        "Error: " + data.error;
+        "<p>Error: " + data.error + "</p>";
       return;
     }
 
@@ -44,6 +44,6 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
   } catch (err) {
     document.getElementById("result").innerHTML =
-      "Error procesando el diagnóstico.";
+      "<p>Error procesando el diagnóstico.</p>";
   }
 });
