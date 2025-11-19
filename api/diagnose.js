@@ -1,154 +1,104 @@
-// api/diagnose.js
-// TOTALMENTE COMPATIBLE CON VERCEL EDGE
-
 export const config = {
-  runtime: "edge"
+  runtime: "edge",
 };
 
-// ---------------------------------------------
-// MAPEOS AUTOMÁTICOS (guías / videos / herramientas)
-// ---------------------------------------------
-function getExtraContent(actions) {
-  const guides = [];
-  const videos = [];
-  const tools = [];
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-  const text = actions.join(" ").toLowerCase();
+// Lista REAL de guías del blog
+const guides = [
+  { id: 1, keywords: ["bobina", "cop", "chispa", "coil"], title: "Cómo cambiar bobina COP", slug: "cambiar-bobina-cop" },
+  { id: 2, keywords: ["bujia", "bujías", "misfire", "p030"], title: "Cómo cambiar bujías", slug: "cambiar-bujias" },
+  { id: 3, keywords: ["filtro gasolina", "no tiene fuerza", "se apaga", "fuel filter"], title: "Cambiar filtro de gasolina", slug: "cambiar-filtro-gasolina" },
+  { id: 4, keywords: ["ckp", "cmp", "sensor cigüeñal", "arbol levas", "p033", "p034"], title: "Cambiar sensor CKP/CMP", slug: "cambiar-sensor-ckp-cmp" },
+  { id: 5, keywords: ["tps", "acelerador", "sensor posición", "tironea"], title: "Cambiar sensor TPS", slug: "cambiar-sensor-tps" },
+  { id: 6, keywords: ["termostato", "temperatura", "sobrecalienta"], title: "Cambiar termostato", slug: "cambiar-termostato" },
+  { id: 7, keywords: ["bomba gasolina", "fuel pump", "presión", "no arranca"], title: "Diagnóstico bomba de gasolina", slug: "diagnostico-bomba-gasolina" },
+  { id: 8, keywords: ["obd2", "codigo", "p0", "scanner", "dtc"], title: "Diagnóstico OBD2", slug: "diagnostico-obd2" },
+  { id: 9, keywords: ["ralenti", "ralentí", "se acelera", "cuerpo aceleración"], title: "Limpiar cuerpo de aceleración", slug: "limpiar-cuerpo-aceleracion" },
+  { id: 10, keywords: ["maf", "sensor maf", "aire", "mass air flow"], title: "Limpiar sensor MAF", slug: "limpiar-sensor-maf" },
+];
 
-  // Bobinas COP
-  if (
-    text.includes("bobina") ||
-    text.includes("cop") ||
-    text.includes("ignición") ||
-    text.includes("misfire")
-  ) {
-    guides.push({
-      title: "Guía: Cómo cambiar una bobina COP",
-      url: "/blog/posts/cambiar-bobina-cop.html"
-    });
+// Ranking inteligente según coincidencias
+function rankGuides(symptoms) {
+  const text = symptoms.toLowerCase();
+  const scores = guides.map(g => {
+    const score = g.keywords.reduce((acc, kw) => acc + (text.includes(kw) ? 1 : 0), 0);
+    return { guide: g, score };
+  });
 
-    videos.push({
-      title: "Video: Cambiar bobinas COP (motor Tritón)",
-      url: "https://www.youtube.com/watch?v=0slUo4NctEI"
-    });
-
-    tools.push(
-      { name: "Bobina COP compatible Ford 5.4", url: "#" },
-      { name: "Llave de 7mm", url: "#" },
-      { name: "Escáner OBD2 recomendado", url: "#" }
-    );
-  }
-
-  // Bujías
-  if (text.includes("bujía") || text.includes("bujias") || text.includes("spark")) {
-    guides.push({
-      title: "Guía: Cómo cambiar bujías",
-      url: "/blog/posts/cambiar-bujias.html"
-    });
-
-    videos.push({
-      title: "Video: Cómo cambiar bujías paso a paso",
-      url: "https://www.youtube.com/watch?v=tP6gGgJU1vI"
-    });
-
-    tools.push(
-      { name: "Juego de bujías compatibles", url: "#" },
-      { name: "Dado para bujías", url: "#" },
-      { name: "Grasa dieléctrica", url: "#" }
-    );
-  }
-
-  return { guides, videos, tools };
+  const sorted = scores.sort((a, b) => b.score - a.score);
+  return sorted.slice(0, 3).map(item => item.guide);
 }
 
-// ---------------------------------------------
-// API PRINCIPAL — LLAMADA A OPENAI SIN SDK
-// ---------------------------------------------
-export default async function handler(req) {
-  if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
-  }
+// Generar búsqueda de YouTube
+function youtubeQuery(txt) {
+  return "https://www.youtube.com/results?search_query=" + encodeURIComponent("cómo reparar " + txt + " auto");
+}
 
+// Llamada a OpenAI sin SDK
+async function askOpenAI(prompt) {
+  const body = {
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.4,
+  };
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+export default async (req) => {
   try {
-    const { message } = await req.json();
-    if (!message) {
-      return Response.json({ error: "Faltan datos" }, { status: 400 });
+    const { symptoms } = await req.json();
+
+    if (!symptoms) {
+      return new Response(JSON.stringify({ error: "Debes enviar 'symptoms'." }), { status: 400 });
     }
+
+    // Inteligencia de coincidencias
+    const recommended = rankGuides(symptoms);
 
     const prompt = `
-Eres FixMyCarAI, un experto en diagnóstico automotriz.
+Eres un mecánico profesional. Analiza este síntoma: "${symptoms}".
 
-A partir de: "${message}"
+Entrega:
+1. Posibles causas.
+2. Pruebas de diagnóstico.
+3. Qué revisar primero.
+4. Solución paso a paso.
+5. Nivel de urgencia.
 
-Genera SOLO este JSON:
-
-{
-  "hypotheses": ["posible falla 1", "posible falla 2"],
-  "actions": ["acción 1", "acción 2"],
-  "common_failures": ["falla común"],
-  "tsbs": ["boletín técnico"],
-  "recalls": ["recall"],
-  "nhtsa_alerts": ["alerta"]
-}
+Responde claro, corto y para principiantes.
 `;
 
-    // -------------- LLAMADA API OPENAI (EDGE SAFE) --------------
-    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.3
-      })
+    const diagnosis = await askOpenAI(prompt);
+
+    const response = {
+      input: symptoms,
+      diagnosis,
+      youtube: youtubeQuery(symptoms),
+      guides: recommended.map(g => ({
+        id: g.id,
+        title: g.title,
+        url: `/blog/posts/${g.slug}.html`,
+      })),
+    };
+
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
     });
 
-    const data = await openaiRes.json();
-    const raw = data.choices?.[0]?.message?.content || "{}";
-
-    let parsed;
-    try {
-      parsed = JSON.parse(raw);
-    } catch (e) {
-      parsed = {
-        hypotheses: [],
-        actions: [],
-        common_failures: [],
-        tsbs: [],
-        recalls: [],
-        nhtsa_alerts: [],
-        raw
-      };
-    }
-
-    const hypotheses = parsed.hypotheses || [];
-    const actions = parsed.actions || [];
-    const common_failures = parsed.common_failures || [];
-    const tsbs = parsed.tsbs || [];
-    const recalls = parsed.recalls || [];
-    const nhtsa_alerts = parsed.nhtsa_alerts || [];
-
-    const extra = getExtraContent(actions);
-
-    return Response.json({
-      hypotheses,
-      actions,
-      common_failures,
-      tsbs,
-      recalls,
-      nhtsa_alerts,
-      guides: extra.guides,
-      videos: extra.videos,
-      tools: extra.tools
-    });
-
-  } catch (err) {
-    return Response.json(
-      { error: "Server error", details: err.message },
-      { status: 500 }
-    );
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
-}
+};
