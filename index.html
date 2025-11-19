@@ -1,98 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixMyCarAI - Diagnóstico Automotriz</title>
-
-    <!-- Tu hoja de estilos -->
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f3f4f6;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
-        header {
-            background: #1e40af;
-            color: white;
-            padding: 20px 10px;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        #container {
-            max-width: 600px;
-            margin: 30px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
-        }
-
-        textarea {
-            width: 100%;
-            height: 120px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #aaa;
-            font-size: 16px;
-            resize: none;
-        }
-
-        button {
-            margin-top: 15px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        #result {
-            margin-top: 25px;
-            text-align: left;
-        }
-
-        #result h2, #result h3 {
-            color: #1e3a8a;
-        }
-
-        a {
-            color: #2563eb;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>FixMyCar AI — Diagnóstico Automotriz Inteligente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo">
+        🔧 FixMyCar <span>AI</span>
+      </div>
+      <div class="subtitle">
+        Diagnóstico inteligente + guías de reparación paso a paso
+      </div>
+      <a class="blog-link" href="/blog/index.html" target="_blank">
+        📘 Ver blog de guías FixMyCarAI
+      </a>
+    </header>
 
-    <header>FixMyCarAI - Diagnóstico Automotriz</header>
+    <main class="app-main">
+      <section class="left-panel">
+        <h2>Describe el problema de tu vehículo</h2>
+        <form id="diagnose-form" class="form">
+          <label for="vin">Vehículo (año, marca, modelo o VIN)</label>
+          <input
+            type="text"
+            id="vin"
+            name="vin"
+            placeholder="Ej. Ford Lobo 2005 5.4 Tritón"
+            required
+          />
 
-    <div id="container">
+          <label for="symptoms">Síntomas / descripción del problema</label>
+          <textarea
+            id="symptoms"
+            name="symptoms"
+            rows="5"
+            placeholder="Ej. Se jalonea al acelerar, tiembla en ralentí y enciende Check Engine con código P0303..."
+            required
+          ></textarea>
 
-        <h2>Describe los síntomas de tu vehículo</h2>
+          <button type="submit" class="btn-primary">
+            🚗 Analizar con FixMyCar AI
+          </button>
+        </form>
 
-        <textarea id="symptoms" placeholder="Ejemplo: El motor tironea al acelerar, huele a gasolina, falla en ralentí..."></textarea>
+        <p class="hint">
+          <strong>Tip:</strong> mientras más detalles des (síntomas, códigos OBD2, condiciones
+          en las que falla), mejor será el diagnóstico.
+        </p>
+      </section>
 
-        <button id="analyzeBtn">Analizar</button>
+      <section class="chat-panel">
+        <h2>Chat de diagnóstico</h2>
+        <div id="chat" class="chat"></div>
+      </section>
+    </main>
 
-        <div id="result"></div>
+    <footer class="app-footer">
+      FixMyCarAI · Proyecto experimental de diagnóstico automotriz con IA ·
+      <a href="/blog/index.html" target="_blank">Guías de reparación</a>
+    </footer>
+  </div>
 
-    </div>
-
-    <!-- Tu script -->
-    <script src="app-v2.js"></script>
-
+  <script src="app.js"></script>
 </body>
 </html>
