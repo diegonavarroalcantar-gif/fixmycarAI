@@ -11,11 +11,23 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   try {
     const response = await fetch("/api/diagnose", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ symptoms })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ symptoms: symptoms })
     });
 
-    const data = await response.json();
+    const text = await response.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      document.getElementById("result").innerHTML =
+        "<p>Error: Respuesta inválida del servidor.</p>";
+      console.error("Respuesta recibida:", text);
+      return;
+    }
 
     if (data.error) {
       document.getElementById("result").innerHTML =
@@ -43,6 +55,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     document.getElementById("result").innerHTML = html;
 
   } catch (err) {
+    console.error(err);
     document.getElementById("result").innerHTML =
       "<p>Error procesando el diagnóstico.</p>";
   }
