@@ -4,7 +4,6 @@ export const config = {
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-// Lista REAL de guías del blog
 const guides = [
   { id: 1, keywords: ["bobina", "cop", "chispa", "coil"], title: "Cómo cambiar bobina COP", slug: "cambiar-bobina-cop" },
   { id: 2, keywords: ["bujia", "bujías", "misfire", "p030"], title: "Cómo cambiar bujías", slug: "cambiar-bujias" },
@@ -15,41 +14,40 @@ const guides = [
   { id: 7, keywords: ["bomba gasolina", "fuel pump", "presión", "no arranca"], title: "Diagnóstico bomba de gasolina", slug: "diagnostico-bomba-gasolina" },
   { id: 8, keywords: ["obd2", "codigo", "p0", "scanner", "dtc"], title: "Diagnóstico OBD2", slug: "diagnostico-obd2" },
   { id: 9, keywords: ["ralenti", "ralentí", "se acelera", "cuerpo aceleración"], title: "Limpiar cuerpo de aceleración", slug: "limpiar-cuerpo-aceleracion" },
-  { id: 10, keywords: ["maf", "sensor maf", "aire", "mass air flow"], title: "Limpiar sensor MAF", slug: "limpiar-sensor-maf" },
+  { id: 10, keywords: ["maf", "sensor maf", "aire", "mass air flow"], title: "Limpiar sensor MAF", slug: "limpiar-sensor-maf" }
 ];
 
-// Ranking inteligente según coincidencias
 function rankGuides(symptoms) {
   const text = symptoms.toLowerCase();
-  const scores = guides.map(g => {
-    const score = g.keywords.reduce((acc, kw) => acc + (text.includes(kw) ? 1 : 0), 0);
-    return { guide: g, score };
-  });
-
-  const sorted = scores.sort((a, b) => b.score - a.score);
-  return sorted.slice(0, 3).map(item => item.guide);
+  return guides
+    .map(g => ({
+      guide: g,
+      score: g.keywords.reduce((acc, kw) => acc + (text.includes(kw) ? 1 : 0), 0)
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(i => i.guide);
 }
 
-// Generar búsqueda de YouTube
 function youtubeQuery(txt) {
-  return "https://www.youtube.com/results?search_query=" + encodeURIComponent("cómo reparar " + txt + " auto");
+  return "https://www.youtube.com/results?search_query=" +
+    encodeURIComponent("cómo reparar " + txt + " auto");
 }
 
-// Llamada a OpenAI sin SDK
 async function askOpenAI(prompt) {
   const body = {
     model: "gpt-4o-mini",
     messages: [{ role: "user", content: prompt }],
-    temperature: 0.4,
+    temperature: 0.4
   };
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
 
   const data = await response.json();
@@ -61,10 +59,11 @@ export default async (req) => {
     const { symptoms } = await req.json();
 
     if (!symptoms) {
-      return new Response(JSON.stringify({ error: "Debes enviar 'symptoms'." }), { status: 400 });
+      return new Response(JSON.stringify({ error: "Debes enviar 'symptoms'." }), {
+        status: 400
+      });
     }
 
-    // Inteligencia de coincidencias
     const recommended = rankGuides(symptoms);
 
     const prompt = `
@@ -77,25 +76,25 @@ Entrega:
 4. Solución paso a paso.
 5. Nivel de urgencia.
 
-Responde claro, corto y para principiantes.
+Responde claro y simple.
 `;
 
     const diagnosis = await askOpenAI(prompt);
 
-    const response = {
+    const result = {
       input: symptoms,
       diagnosis,
       youtube: youtubeQuery(symptoms),
       guides: recommended.map(g => ({
         id: g.id,
         title: g.title,
-        url: `/blog/posts/${g.slug}.html`,
-      })),
+        url: `/blog/posts/${g.slug}.html`
+      }))
     };
 
-    return new Response(JSON.stringify(response), {
+    return new Response(JSON.stringify(result), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
 
   } catch (error) {
