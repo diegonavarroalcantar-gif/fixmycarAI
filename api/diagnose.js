@@ -59,24 +59,19 @@ export default async (req) => {
     const { symptoms } = await req.json();
 
     if (!symptoms) {
-      return new Response(JSON.stringify({ error: "Debes enviar 'symptoms'." }), {
-        status: 400
-      });
+      return new Response(JSON.stringify({ error: "Debes enviar 'symptoms'." }), { status: 400 });
     }
 
     const recommended = rankGuides(symptoms);
 
     const prompt = `
 Eres un mecánico profesional. Analiza este síntoma: "${symptoms}".
-
 Entrega:
 1. Posibles causas.
 2. Pruebas de diagnóstico.
 3. Qué revisar primero.
 4. Solución paso a paso.
 5. Nivel de urgencia.
-
-Responde claro y simple.
 `;
 
     const diagnosis = await askOpenAI(prompt);
