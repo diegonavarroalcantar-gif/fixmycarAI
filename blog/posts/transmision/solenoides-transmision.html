@@ -1,1 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Solenoides de transmisión automática – Diagnóstico y fallas comunes | FixMyCar AI</title>
+  <link rel="stylesheet" href="../../blog.css">
+</head>
+<body>
 
+<h1>Solenoides de transmisión automática: diagnóstico, fallas y reparación</h1>
+
+<p><strong>Tiempo estimado:</strong> 20–60 minutos  
+<br><strong>Dificultad:</strong> Media  
+<br><strong>Peligro:</strong> Bajo–Medio</p>
+
+<div class="card">
+  <h2>¿Qué son los solenoides de transmisión?</h2>
+  <p>
+    Los solenoides son válvulas eléctricas que controlan la presión hidráulica dentro de la transmisión.  
+    Regulan:
+  </p>
+  <ul>
+    <li>Los cambios de marcha</li>
+    <li>El embrague del convertidor de torque (lock-up)</li>
+    <li>La presión de línea</li>
+    <li>El flujo de ATF dentro del cuerpo de válvulas</li>
+  </ul>
+
+  <p>
+    Cuando un solenoide falla, la transmisión se comporta de forma irregular:  
+    golpes, patinamiento, cambios tardíos o quedarse solo en 1ra/2da.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Síntomas de solenoides defectuosos</h2>
+  <ul>
+    <li>Patinamiento entre cambios</li>
+    <li>Cambios bruscos</li>
+    <li>Golpes al pasar de P → D o de D → R</li>
+    <li>Retraso en entrar Drive o Reverse</li>
+    <li>La transmisión no cambia o se queda “pegada”</li>
+    <li>Velocidad incorrecta vs RPM (relación incorrecta)</li>
+    <li>Check Engine o luz de transmisión (O/D OFF parpadeando)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Códigos OBD2 relacionados con solenoides</h2>
+  <p><strong>Códigos más comunes:</strong></p>
+  <ul>
+    <li>P0750 – Solenoide A</li>
+    <li>P0755 – Solenoide B</li>
+    <li>P0760 – Solenoide C</li>
+    <li>P0765 – Solenoide D</li>
+    <li>P0770 – Solenoide E / lock-up</li>
+    <li>P2723 – Solenoide presión</li>
+    <li>P0740 – Problema con convertidor de torque</li>
+    <li>P0715 – Sensor de velocidad (Entrada)</li>
+    <li>P0720 – Sensor de velocidad (Salida)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 1 — Confirmar nivel y estado del ATF</h2>
+  <p>Antes de culpar a un solenoide, revisa primero:</p>
+  <ul>
+    <li>Nivel correcto de ATF (muy importante)</li>
+    <li>Color (oscuro = problema)</li>
+    <li>Olor (quemado = transmisión deslizándose)</li>
+    <li>Presencia de limaduras en la charola</li>
+  </ul>
+
+  <p>Guía: <a href="verificar-nivel-atf.html">Cómo revisar el nivel de ATF</a></p>
+</div>
+
+<div class="card">
+  <h2>Paso 2 — Escanear transmisión (TCM)</h2>
+  <p>
+    Usa un escáner que pueda leer datos de transmisión, no solo motor.  
+    En datos en vivo busca:
+  </p>
+  <ul>
+    <li>Presión de línea</li>
+    <li>Estado de solenoides (ON/OFF)</li>
+    <li>Comandos enviados vs recibidos</li>
+    <li>Diferencia de RPM al aplicar lock-up</li>
+  </ul>
+
+  <p>
+    Si el TCM ordena activar un solenoide, pero la transmisión no responde → solenoide trabado o cuerpo de válvulas sucio.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 3 — Probar resistencia de los solenoides</h2>
+  <p>
+    Localiza el arnés de la transmisión (generalmente encima o enfrente del cuerpo de válvulas).
+  </p>
+  <p><strong>Valores típicos:</strong></p>
+  <ul>
+    <li>Entre 5 y 20 ohms: normal</li>
+    <li>∞ infinito: solenoide abierto (dañado)</li>
+    <li>0 ohms: solenoide en corto (dañado)</li>
+  </ul>
+  <p>
+    Consulta el diagrama específico de tu vehículo, pero este rango es común.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 4 — Prueba bidireccional (si tu escáner lo permite)</h2>
+  <p>
+    Algunos escáneres permiten ACTIVAR solenoides desde el menú.  
+    Si un solenoide no se escucha o no produce cambio en presión → está fallando.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 5 — Inspección del cuerpo de válvulas</h2>
+  <p>
+    Esto ya es un trabajo más profundo, pero es clave cuando:
+  </p>
+  <ul>
+    <li>Hay limaduras o suciedad en ATF</li>
+    <li>Los solenoides están pegados</li>
+    <li>Hay presión baja</li>
+  </ul>
+
+  <p><strong>Se recomienda:</strong></p>
+  <ul>
+    <li>Limpiar cuerpo de válvulas</li>
+    <li>Reemplazar empaques</li>
+    <li>Verificar que no haya válvulas trabadas</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Fallas típicas según fabricante</h2>
+  <p><strong>Ford / Mazda:</strong> Solenoides del 4R70W y 5R55S suelen fallar por suciedad.</p>
+  <p><strong>Honda:</strong> Solenoides de presión (A/B) fallan en Civic/Accord 2003–2010.</p>
+  <p><strong>Nissan:</strong> Solenoides del RE5F22A con desgaste de corredera.</p>
+  <p><strong>GM:</strong> Solenoides del 4L60E muy comunes.</p>
+</div>
+
+<div class="card">
+  <h2>¿Cuándo cambiar los solenoides?</h2>
+  <ul>
+    <li>Códigos P0750–P0770 persistentes</li>
+    <li>No hay respuesta al activar solenoide</li>
+    <li>Ruido extraño en cuerpo de válvulas</li>
+    <li>Patinamiento severo</li>
+    <li>Golpes bruscos al cambiar</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Herramientas recomendadas</h2>
+  <ul>
+    <li><a href="#" target="_blank">Escáner con funciones bidireccionales (Amazon)</a></li>
+    <li><a href="#" target="_blank">Multímetro digital</a></li>
+    <li><a href="#" target="_blank">ATF recomendado para tu vehículo</a></li>
+    <li><a href="#" target="_blank">Juego de solenoides de reemplazo</a></li>
+  </ul>
+</div>
+
+<p><a href="/blog/index.html">⬅ Volver al índice del blog</a></p>
+
+</body>
+</html>
