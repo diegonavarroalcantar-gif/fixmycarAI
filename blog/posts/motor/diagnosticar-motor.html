@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico general de fallas de motor – FixMyCar AI</title>
+  <link rel="stylesheet" href="../../blog.css">
+</head>
+<body>
+
+<h1>Diagnóstico general del motor – Guía FixMyCar AI</h1>
+
+<p><strong>Tiempo estimado:</strong> 15–60 minutos<br>
+<strong>Dificultad:</strong> Media<br>
+<strong>Peligro:</strong> Bajo–Medio (cuidado con partes calientes)</p>
+
+<div class="card">
+  <h2>Principales categorías de fallas de motor</h2>
+  <p>Toda falla de motor entra en SOLO una de estas 5 áreas:</p>
+  <ul>
+    <li><strong>Combustión</strong> (mezcla aire/combustible)</li>
+    <li><strong>Encendido</strong> (bujías, bobinas)</li>
+    <li><strong>Aire</strong> (MAF, cuerpo de aceleración, fugas de vacío)</li>
+    <li><strong>Sensorización</strong> (CKP, CMP, O2, temperatura)</li>
+    <li><strong>Compresión</strong> (válvulas, anillos, junta de cabeza)</li>
+  </ul>
+  <p>Si sabes en qué área está la falla, encuentras la solución rápido.</p>
+</div>
+
+<div class="card">
+  <h2>Paso 1 — Identificar el tipo de falla</h2>
+  <p>Antes de empezar el diagnóstico responde esto:</p>
+
+  <ul>
+    <li><strong>¿Tiembla en ralentí?</strong> → encendido / aire / vacío</li>
+    <li><strong>¿Falla solo en frío?</strong> → sensores / mezcla rica</li>
+    <li><strong>¿Falla en caliente?</strong> → bobinas / CKP / compresión</li>
+    <li><strong>¿Se apaga en marcha?</strong> → CKP / alternador / combustible</li>
+    <li><strong>¿Ratea o pierde potencia?</strong> → bobinas / inyectores</li>
+    <li><strong>¿Turbo no actúa?</strong> → sensores / fugas / VGT</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 2 — Revisar códigos OBD2</h2>
+  <p>Necesitarás un escáner OBD2.</p>
+
+  <p><strong>Códigos más frecuentes:</strong></p>
+  <ul>
+    <li><strong>P0300–P0306</strong> – fallos de encendido (misfire)</li>
+    <li><strong>P0171 / P0174</strong> – mezcla pobre (fuga de vacío)</li>
+    <li><strong>P0172 / P0175</strong> – mezcla rica</li>
+    <li><strong>P0101–P0103</strong> – sensor MAF</li>
+    <li><strong>P0115–P0119</strong> – sensor ECT (temperatura)</li>
+    <li><strong>P0420</strong> – catalizador ineficiente</li>
+    <li><strong>P0131–P0161</strong> – sensores de oxígeno</li>
+    <li><strong>P0335</strong> – sensor CKP (cigüeñal)</li>
+    <li><strong>P0340</strong> – sensor CMP (árbol de levas)</li>
+  </ul>
+
+  <p>De aquí sabrás a qué guía seguir:</p>
+
+  <ul>
+    <li><a href="fallas-de-combustion.html">Fallas de combustión</a></li>
+    <li><a href="fallas-de-sensores.html">Fallas de sensores</a></li>
+    <li><a href="falla-de-ralenti.html">Problemas de ralentí</a></li>
+    <li><a href="consumo-excesivo-de-combustible.html">Consumo excesivo</a></li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 3 — Prueba de “Aire” (muy importante)</h2>
+  <p>Una fuga de vacío puede simular fallas de:</p>
+  <ul>
+    <li>sistema de combustible</li>
+    <li>bobinas</li>
+    <li>sensores</li>
+    <li>ralentí</li>
+  </ul>
+
+  <p><strong>Síntomas de fuga de vacío:</strong></p>
+  <ul>
+    <li>Ralentí inestable</li>
+    <li>Pérdida de potencia</li>
+    <li>Explosiones en admisión</li>
+    <li>Códigos P0171 o P030x</li>
+  </ul>
+
+  <p>Revisar:</p>
+  <ul>
+    <li>Mangueras rotas</li>
+    <li>PCV fallando</li>
+    <li>Empaques de múltiple de admisión</li>
+    <li>Cuerpo de aceleración sucio</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 4 — Revisar encendido (misfire)</h2>
+  <p><strong>90% de los misfires son:</strong></p>
+  <ul>
+    <li>Bujía dañada</li>
+    <li>Bobina defectuosa</li>
+    <li>Arnés flojo en la bobina</li>
+    <li>Inyector sucio</li>
+  </ul>
+
+  <p><strong>Prueba rápida:</strong></p>
+  <ul>
+    <li>Intercambiar bobinas entre cilindros</li>
+    <li>Si el misfire sigue al cilindro → la bobina está mala</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 5 — Revisar sensores principales</h2>
+
+  <h3>CKP (cigüeñal) — el más importante</h3>
+  <ul>
+    <li>Si falla → el motor se apaga de golpe</li>
+    <li>Código: P0335</li>
+  </ul>
+
+  <h3>CMP (árbol de levas)</h3>
+  <ul>
+    <li>Fallas al encender</li>
+    <li>Rateos</li>
+    <li>Código: P0340</li>
+  </ul>
+
+  <h3>MAF / MAP</h3>
+  <ul>
+    <li>Aceleración pobre</li>
+    <li>Consumo elevado</li>
+    <li>Check Engine intermitente</li>
+  </ul>
+
+  <h3>O2 / AFR</h3>
+  <ul>
+    <li>Mezcla muy rica o pobre</li>
+    <li>Catalizador dañado</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 6 — Revisar compresión</h2>
+  <p>Si todo lo electrónico está bien, pero sigue fallando…</p>
+
+  <p><strong>Posibles causas de baja compresión:</strong></p>
+  <ul>
+    <li>Anillos gastados</li>
+    <li>Válvulas quemadas</li>
+    <li>Junta de cabeza dañada</li>
+    <li>Levantaválvulas trabados</li>
+  </ul>
+
+  <p><strong>Resultados de compresión:</strong></p>
+  <ul>
+    <li>130–180 psi = normal (varía por motor)</li>
+    <li>Menos de 110 psi = bajo</li>
+    <li>Diferencia mayor a 15% entre cilindros = problema mecánico</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 7 — Tabla rápida de diagnóstico</h2>
+
+  <table>
+    <thead>
+      <tr><th>Síntoma</th><th>Causas probables</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Ralentí inestable</td><td>Fuga de vacío, cuerpo sucio, MAF sucio</td></tr>
+      <tr><td>Se apaga en caliente</td><td>CKP, bobinas, sobrecalentamiento</td></tr>
+      <tr><td>Rateo en aceleración</td><td>Bobina, bujía, inyector sucio</td></tr>
+      <tr><td>Pérdida de potencia</td><td>MAF, mezcla pobre, fuga de vacío</td></tr>
+      <tr><td>Consumo excesivo</td><td>O2, sensor de temperatura, inyector goteando</td></tr>
+      <tr><td>Humo negro</td><td>Mezcla rica, O2 dañado</td></tr>
+      <tr><td>Humo blanco</td><td>Junta de cabeza</td></tr>
+      <tr><td>Humo azul</td><td>Aceite quemado, anillos gastados</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Guías relacionadas del sistema de motor</h2>
+  <ul>
+    <li><a href="fallas-de-combustion.html">Fallas de combustión</a></li>
+    <li><a href="fallas-de-sensores.html">Fallas de sensores</a></li>
+    <li><a href="falla-de-ralenti.html">Problemas de ralentí</a></li>
+    <li><a href="consumo-excesivo-de-combustible.html">Consumo excesivo de combustible</a></li>
+  </ul>
+</div>
+
+<p><a href="/blog/index.html">⬅ Volver al índice del blog</a></p>
+
+</body>
+</html>
