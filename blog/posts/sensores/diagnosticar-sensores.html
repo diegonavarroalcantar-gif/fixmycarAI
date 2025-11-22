@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico de sensores del motor | FixMyCar AI</title>
+  <link rel="stylesheet" href="../../blog.css">
+</head>
+<body>
+
+<h1>Diagnóstico del Sistema de Sensores del Motor – FixMyCar AI</h1>
+
+<p><strong>Tiempo estimado:</strong> 10–40 minutos<br>
+<strong>Dificultad:</strong> Media–Alta</p>
+
+<div class="card">
+  <h2>¿Por qué son tan importantes los sensores?</h2>
+  <p>
+    Los sensores del motor determinan mezcla, chispa, tiempos de inyección, ralentí, potencia,
+    temperatura, carga del motor y más.  
+    Si uno falla, todo el sistema se desajusta.
+  </p>
+
+  <p><strong>Los sensores más críticos son:</strong></p>
+
+  <ul>
+    <li>CKP – Sensor de cigüeñal</li>
+    <li>CMP – Sensor de árbol de levas</li>
+    <li>MAF – Medidor de flujo de aire</li>
+    <li>MAP – Sensor de presión del múltiple</li>
+    <li>IAT – Temperatura del aire</li>
+    <li>TPS – Posición de acelerador</li>
+    <li>Knock Sensor – Golpeteo</li>
+    <li>Oxígeno (O2) – Relación aire/combustible</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Síntomas generales de un sensor fallando</h2>
+  <ul>
+    <li>Pérdida de potencia</li>
+    <li>Fallas intermitentes</li>
+    <li>Tironeos / rateos</li>
+    <li>Ralentí inestable</li>
+    <li>Apagones repentinos</li>
+    <li>Consumo elevado</li>
+    <li>Arranque difícil</li>
+    <li>Códigos OBD2 sin causa aparente</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 1 — Escanear códigos OBD2</h2>
+
+  <p><strong>Los códigos típicos por sensor:</strong></p>
+
+  <ul>
+    <li><strong>P0335–P0339</strong> → CKP</li>
+    <li><strong>P0340–P0349</strong> → CMP</li>
+    <li><strong>P0100–P0104</strong> → MAF</li>
+    <li><strong>P0105–P0109</strong> → MAP</li>
+    <li><strong>P0110–P0114</strong> → IAT</li>
+    <li><strong>P0120–P0124</strong> → TPS</li>
+    <li><strong>P0325–P0334</strong> → Knock sensor</li>
+  </ul>
+
+  <p>Si aparece un código de sensor → revisa arnés, conexiones y suciedad primero.</p>
+</div>
+
+<div class="card">
+  <h2>Paso 2 — Revisar arnés, conectores y tierra</h2>
+  <p>MÁS DEL 40% de las fallas de sensores no son el sensor, sino:</p>
+
+  <ul>
+    <li>Conector flojo</li>
+    <li>Terminal sulfatada</li>
+    <li>Cable quebrado</li>
+    <li>Pérdida de tierra</li>
+    <li>Cables quemados por estar cerca del escape</li>
+  </ul>
+
+  <p>Regla: <strong>nunca cambies un sensor sin revisar el arnés primero.</strong></p>
+</div>
+
+<div class="card">
+  <h2>Paso 3 — Revisar señales reales del sensor</h2>
+  <p>Idealmente con escáner OBD2 en tiempo real:</p>
+
+  <ul>
+    <li><strong>CKP</strong>: debe marcar RPM estables</li>
+    <li><strong>CMP</strong>: sincronía con CKP</li>
+    <li><strong>MAF</strong>: flujo de aire coherente (sube al acelerar)</li>
+    <li><strong>MAP</strong>: vacío correcto en ralentí</li>
+    <li><strong>IAT</strong>: temperatura del aire real</li>
+    <li><strong>TPS</strong>: 0.5V en reposo, ~4.5V a fondo</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 4 — Tabla de síntomas por sensor</h2>
+
+  <table>
+    <thead>
+      <tr><th>Síntoma</th><th>Sensor probable</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>No arranca</td><td>CKP o CMP</td></tr>
+      <tr><td>Arranca y se apaga</td><td>CKP / MAF</td></tr>
+      <tr><td>Ralentí inestable</td><td>MAF / MAP / TPS</td></tr>
+      <tr><td>Pérdida de potencia</td><td>MAF / MAP / Knock</td></tr>
+      <tr><td>Falla en caliente</td><td>CKP / CMP</td></tr>
+      <tr><td>Consumo elevado</td><td>MAF / IAT / O2</td></tr>
+      <tr><td>Retardo al acelerar</td><td>TPS / MAF</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Paso 5 — Guías detalladas por sensor</h2>
+  <ul>
+    <li><a href="sensor-ckp-fallando.html">Sensor CKP (cigüeñal)</a></li>
+    <li><a href="sensor-cmp-fallando.html">Sensor CMP (árbol de levas)</a></li>
+    <li><a href="sensor-maf-o-map.html">Sensor MAF / MAP</a></li>
+    <li><a href="sensor-tps-iat-knock.html">TPS, IAT y Knock Sensor</a></li>
+  </ul>
+</div>
+
+<p><a href="/blog/index.html">⬅ Volver al índice</a></p>
+
+</body>
+</html>
