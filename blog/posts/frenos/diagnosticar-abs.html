@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico del sistema ABS – Fallas, códigos y soluciones | FixMyCar AI</title>
+  <link rel="stylesheet" href="../../blog.css">
+</head>
+<body>
+
+<h1>Diagnóstico del sistema ABS (Anti-Lock Brake System)</h1>
+
+<p><strong>Tiempo estimado:</strong> 15–40 minutos  
+<br><strong>Dificultad:</strong> Media  
+<br><strong>Riesgo:</strong> Medio (requiere pruebas de frenado y sistemas electrónicos)</p>
+
+<div class="card">
+  <h2>¿Qué es el ABS y por qué falla?</h2>
+  <p>
+    El ABS evita que las llantas se bloqueen en frenadas fuertes.  
+    Cuando una parte del sistema falla, la computadora apaga completamente la función ABS.
+  </p>
+
+  <p><strong>Componentes principales:</strong></p>
+  <ul>
+    <li>Sensor de velocidad en cada rueda</li>
+    <li>Aro reluctor / anillo dentado</li>
+    <li>Módulo ABS (unidad hidráulica + computadora)</li>
+    <li>Chicotes y conectores</li>
+    <li>Fusibles y relevadores</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Síntomas de un ABS defectuoso</h2>
+  <ul>
+    <li>Luz ABS encendida en el tablero</li>
+    <li>Frenos normales, pero sin antibloqueo</li>
+    <li>Vibración en pedal al frenar fuerte</li>
+    <li>Olor a quemado en frenadas fuertes</li>
+    <li>Rueda que se bloquea más rápido</li>
+    <li>Velocímetro intermitente (sensor compartido)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 1 — Leer códigos de ABS (OBD2 avanzado)</h2>
+  <p>
+    Los escáneres básicos NO leen ABS.  
+    Se necesita uno que lea chasis:
+  </p>
+
+  <ul>
+    <li>Autel</li>
+    <li>Launch</li>
+    <li>ThinkDiag</li>
+    <li>Foxwell NT630 / NT710</li>
+  </ul>
+
+  <p><strong>Códigos comunes:</strong></p>
+  <ul>
+    <li><strong>C0035</strong> – Sensor rueda delantera izquierda</li>
+    <li><strong>C0040</strong> – Sensor rueda delantera derecha</li>
+    <li><strong>C0045 / C0050</strong> – Sensores traseros</li>
+    <li><strong>C0200–C0210</strong> – Velocidad errática / sin señal</li>
+    <li><strong>C0265</strong> – Falla módulo ABS (muy común GM)</li>
+    <li><strong>C1380</strong> – Relé ABS dañado</li>
+  </ul>
+
+  <p>
+    Si tienes código por rueda → problema en sensor, cable o anillo reluctor.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 2 — Revisar sensores de velocidad</h2>
+  <p>Cada rueda tiene su propio sensor. Revisa:</p>
+  <ul>
+    <li>Daño físico</li>
+    <li>Cable mordido o quebrado</li>
+    <li>Suciedad excesiva (hierro, polvo, grasa)</li>
+    <li>Conectores flojos o sulfatados</li>
+  </ul>
+
+  <p>a) <strong>Sensor tipo magnético:</strong>  
+    – Puede cubrirse de limadura metálica y perder señal.</p>
+
+  <p>b) <strong>Sensor tipo Hall:</strong>  
+    – Genera código si el aro reluctor está roto.</p>
+</div>
+
+<div class="card">
+  <h2>Paso 3 — Revisar el aro reluctor (anillo dentado)</h2>
+
+  <p>Es una de las fallas MÁS comunes.</p>
+
+  <ul>
+    <li>Anillo roto</li>
+    <li>Partido por la mitad</li>
+    <li>Faltan dientes</li>
+    <li>Se mueve libremente (no debe)</li>
+    <li>Oxidación excesiva</li>
+  </ul>
+
+  <p>
+    Si alguna rueda tiene señal diferente a las otras → anillo dañado.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 4 — Prueba de datos en vivo (very recommended)</h2>
+  <p>
+    En el escáner, entra a:
+  </p>
+  <p><strong>ABS → Datos en vivo → Velocidad de ruedas</strong></p>
+
+  <p><strong>Interpretación:</strong></p>
+  <ul>
+    <li>Si tres ruedas marcan 20 km/h y una marca 0 → sensor o anillo dañado.</li>
+    <li>Si una rueda marca más o menos velocidad → señal sucia.</li>
+    <li>Si todas marcan 0 → módulo ABS sin comunicación.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 5 — Revisar fusibles y relé ABS</h2>
+  <p>Un fusible quemado desactiva ABS completamente.</p>
+
+  <p>Revisa:</p>
+  <ul>
+    <li>Fusible ABS (generalmente 30–60A)</li>
+    <li>Relé ABS (muchos fallan por humedad)</li>
+    <li>Conectores corroídos</li>
+  </ul>
+
+  <p><strong>Regla:</strong> Si todo parece bien pero el módulo no responde → posible falla interna.</p>
+</div>
+
+<div class="card">
+  <h2>Paso 6 — Revisar módulo ABS</h2>
+  <p>
+    Si hay códigos C0265, C0110, C0131 o similares → el módulo está fallando.
+  </p>
+  <p><strong>Señales de módulo dañado:</strong></p>
+  <ul>
+    <li>ABS funciona a veces sí, a veces no</li>
+    <li>Escáner no conecta con ABS</li>
+    <li>Todo parece bien en ruedas, pero la luz sigue</li>
+  </ul>
+
+  <p>Los módulos ABS fallan mucho en GM, Volkswagen, Ford, Jeep y Nissan.</p>
+</div>
+
+<div class="card">
+  <h2>¿Cuándo es peligroso manejar con ABS dañado?</h2>
+  <ul>
+    <li>En lluvia</li>
+    <li>En carretera</li>
+    <li>En frenadas fuertes</li>
+    <li>Si el pedal vibra sin razón</li>
+  </ul>
+
+  <p>El vehículo sigue frenando, pero sin ABS se pierde estabilidad en emergencias.</p>
+</div>
+
+<div class="card">
+  <h2>Herramientas recomendadas</h2>
+  <ul>
+    <li><a href="#" target="_blank">Escáner que lea ABS (Amazon)</a></li>
+    <li><a href="#" target="_blank">Sensores de ABS por modelo</a></li>
+    <li><a href="#" target="_blank">Limpiador de frenos</a></li>
+    <li><a href="#" target="_blank">Grasa dieléctrica para conectores</a></li>
+  </ul>
+</div>
+
+<p><a href="/blog/index.html">⬅ Volver al índice del blog</a></p>
+
+</body>
+</html>
