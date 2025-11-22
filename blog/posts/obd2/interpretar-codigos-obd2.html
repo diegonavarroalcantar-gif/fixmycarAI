@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cómo interpretar códigos OBD2 | FixMyCar AI</title>
+  <link rel="stylesheet" href="../../blog.css">
+</head>
+<body>
+
+<h1>Cómo interpretar códigos OBD2 – FixMyCar AI</h1>
+
+<p><strong>Tiempo estimado:</strong> 5–20 minutos<br>
+<strong>Dificultad:</strong> Fácil–Media</p>
+
+<div class="card">
+  <h2>¿Qué es un código OBD2?</h2>
+  <p>
+    Es un código generado por la computadora del vehículo cuando detecta una condición anormal
+    en alguno de sus sistemas: motor, transmisión, emisiones, combustible, encendido, etc.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Estructura de un código OBD2</h2>
+  <p>Un código tiene 5 caracteres, por ejemplo: <strong>P0301</strong></p>
+
+  <table>
+    <thead>
+      <tr><th>Carácter</th><th>Significado</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>P</strong>  (1° letra)</td><td>Sistema afectado: P = Motor/Transmisión</td></tr>
+      <tr><td><strong>0</strong> (2° dígito)</td><td>Tipo: 0 = código genérico, 1 = fabricante</td></tr>
+      <tr><td><strong>3</strong> (3° dígito)</td><td>Subcategoría (por ejemplo: encendido)</td></tr>
+      <tr><td><strong>01</strong> (últimos dos)</td><td>Falla específica (cilindro 1)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Interpretación rápida por sistema</h2>
+
+  <ul>
+    <li><strong>P0xxx</strong> → Motor y emisiones (genérico)</li>
+    <li><strong>P1xxx</strong> → Específico del fabricante</li>
+    <li><strong>P2xxx</strong> → Aire/combustible, emisiones avanzadas</li>
+    <li><strong>P3xxx</strong> → Encendido, chispa, misfires</li>
+  </ul>
+
+  <p>Códigos más comunes por categoría:</p>
+
+  <ul>
+    <li>P0171 / P0174 → Mezcla pobre</li>
+    <li>P0300–P0306 → Misfires</li>
+    <li>P0420 / P0430 → Catalizador ineficiente</li>
+    <li>P0100–P0104 → MAF</li>
+    <li>P0335–P0349 → CKP/CMP</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 1 — Verifica si el código es genérico o del fabricante</h2>
+  <p>Si el segundo dígito es:</p>
+  <ul>
+    <li><strong>0</strong> → Genérico (mismo significado en todos los autos)</li>
+    <li><strong>1</strong> → Específico del fabricante</li>
+  </ul>
+
+  <p>
+    Ejemplo: P1131 en Ford = sensor O2 con mezcla pobre.<br>
+    En Toyota puede significar otra cosa.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 2 — Identificar el sistema afectado</h2>
+
+  <table>
+    <thead>
+      <tr><th>Prefijo</th><th>Significado</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>P01xx</td><td>Sensores aire/combustible (MAF, MAP, IAT)</td></tr>
+      <tr><td>P02xx</td><td>Inyectores / combustible</td></tr>
+      <tr><td>P03xx</td><td>Encendido y misfire</td></tr>
+      <tr><td>P04xx</td><td>Emisiones / EVAP</td></tr>
+      <tr><td>P0420/P0430</td><td>Catalizador</td></tr>
+      <tr><td>P0500–P0599</td><td>Marcha mínima, velocidad, etc.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Paso 3 — Relaciona el código con síntomas reales</h2>
+  <p>
+    El MISMO código puede tener 2 o más causas distintas.  
+    Por eso siempre se recomienda revisar síntomas además del código.
+  </p>
+
+  <p><strong>Ejemplo:</strong></p>
+  <ul>
+    <li>P0302 + vibración fuerte en ralentí → Bobina del cilindro 2</li>
+    <li>P0171 + falta de potencia → MAF sucio o fuga de vacío</li>
+    <li>P0420 + olor a azufre → Catalizador obstruido</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 4 — No borrar los códigos antes de diagnosticar</h2>
+  <p>
+    Si borras los códigos, eliminas pistas importantes como “pendientes” o “permanentes”.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 5 — Usa nuestras guías avanzadas por subcategoría</h2>
+  <ul>
+    <li><a href="codigos-de-falla-p0xxx-motor.html">Códigos P0xxx – Motor y emisiones</a></li>
+    <li><a href="codigos-de-falla-p1xxx-avanzado.html">Códigos P1xxx – Fabricante</a></li>
+    <li><a href="codigos-de-falla-p2xxx-sensores-y-emisiones.html">Códigos P2xxx – Aire/combustible</a></li>
+    <li><a href="codigos-de-falla-p3xxx-encendido-y-control.html">Códigos P3xxx – Misfire y encendido</a></li>
+  </ul>
+</div>
+
+<p><a href="/blog/index.html">⬅ Volver al índice</a></p>
+
+</body>
+</html>
