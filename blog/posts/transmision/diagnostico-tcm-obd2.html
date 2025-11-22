@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico del TCM (Transmisión) con OBD2 – FixMyCar AI</title>
+  <link rel="stylesheet" href="../../blog.css">
+</head>
+<body>
+
+<h1>Diagnóstico del TCM (Transmisión automática) usando un escáner OBD2</h1>
+
+<p><strong>Tiempo estimado:</strong> 10–30 minutos  
+<br><strong>Dificultad:</strong> Fácil–Media  
+<br><strong>Peligro:</strong> Bajo</p>
+
+<div class="card">
+  <h2>¿Qué es el TCM?</h2>
+  <p>
+    El <strong>TCM</strong> (Transmission Control Module) es el módulo que controla:
+  </p>
+  <ul>
+    <li>Los cambios de la transmisión</li>
+    <li>Solenoides y presión interna</li>
+    <li>Convertidor de torque</li>
+    <li>Tiempos de cambio</li>
+    <li>Modos de protección (limp mode)</li>
+  </ul>
+  <p>Cuando falla el TCM, la transmisión puede quedarse solo en una marcha o comportarse de forma errática.</p>
+</div>
+
+<div class="card">
+  <h2>¿Qué escáneres sirven para leer transmisión?</h2>
+  <p>La mayoría de los escáneres OBD2 básicos <strong>NO leen transmisión</strong>.</p>
+
+  <p><strong>Estos SÍ sirven:</strong></p>
+  <ul>
+    <li>Autel (cualquier modelo)</li>
+    <li>Launch (CRP, ThinkDiag, X431)</li>
+    <li>Foxwell NT630 / NT710</li>
+    <li>ThinkDiag Bluetooth</li>
+    <li>BlueDriver (parcialmente)</li>
+  </ul>
+
+  <p>Los escáneres de $10–$20 solo leen motor (códigos P0xxx).</p>
+</div>
+
+<div class="card">
+  <h2>Paso 1 — Leer códigos de transmisión</h2>
+  <p>En el menú del escáner elige:</p>
+  <p><strong>Diagnóstico → Transmisión (TCM)</strong></p>
+
+  <p>Los códigos más comunes incluyen:</p>
+  <ul>
+    <li><strong>P0700</strong> – Falla general del TCM (siempre aparece cuando hay una falla real)</li>
+    <li>P0715 – Sensor velocidad entrada</li>
+    <li>P0720 – Sensor velocidad salida</li>
+    <li>P0730 – Relación de cambio incorrecta</li>
+    <li>P0740 – Lock-up del convertidor</li>
+    <li>P0750–P0770 – Solenoides A/B/C/D/E</li>
+    <li>P0796 – Control de presión</li>
+    <li>P0841 – Presión anormal</li>
+    <li>P0871 – Sensor presión transmisión</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 2 — Leer datos en vivo (live data)</h2>
+  
+  <p>Esto es extremadamente útil para dar un diagnóstico preciso.</p>
+
+  <p><strong>Parámetros clave:</strong></p>
+  <ul>
+    <li>RPM de entrada vs salida</li>
+    <li>Presión de línea</li>
+    <li>Estado de solenoides (ON/OFF)</li>
+    <li>Deslizamiento del convertidor (Slip RPM)</li>
+    <li>Temperatura ATF</li>
+    <li>Comandos enviados por TCM</li>
+  </ul>
+
+  <p><strong>Cómo interpretar:</strong></p>
+  <ul>
+    <li>Si el TCM ordena un solenoide pero la presión no cambia → solenoide trabado.</li>
+    <li>Si el Slip RPM es alto → convertidor o presión baja.</li>
+    <li>Si la presión es baja siempre → filtro tapado / bomba desgastada.</li>
+    <li>Si temperatura excede 105ºC → riesgo alto de daño.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 3 — Reset adaptativo del TCM</h2>
+  <p>
+    Después de reparaciones, es recomendable reiniciar el aprendizaje de la transmisión.
+  </p>
+  <p>Guía: <a href="reset-adaptativo-transmision.html">Reset adaptativo de transmisión</a></p>
+</div>
+
+<div class="card">
+  <h2>Paso 4 — Prueba de actuadores (si tu escáner lo permite)</h2>
+  <p>En el menú del escáner busca:</p>
+  <p><strong>Actuators / Active Test</strong></p>
+
+  <p>Prueba:</p>
+  <ul>
+    <li>Solenoide A</li>
+    <li>Solenoide B</li>
+    <li>Solenoide de presión</li>
+    <li>Solenoide convertidor (lock-up)</li>
+  </ul>
+
+  <p>
+    Si no cambia la presión o no se escucha clic → solenoide defectuoso o cuerpo de válvulas bloqueado.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Paso 5 — Verificar sensores de velocidad</h2>
+  <p>Los sensores de velocidad entrada/salida determinan cuándo cambiar.</p>
+
+  <p><strong>Fallan cuando:</strong></p>
+  <ul>
+    <li>Hay tirones entre cambios</li>
+    <li>Tarda en entrar Drive/Reverse</li>
+    <li>Se queda en modo protección (2da o 3ra)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>Paso 6 — Modo Limp (modo protección)</h2>
+  <p>
+    Cuando el TCM detecta una falla grave, bloquea la transmisión en una sola marcha 
+    para evitar daño.
+  </p>
+
+  <p><strong>Causas:</strong></p>
+  <ul>
+    <li>Baja presión</li>
+    <li>Solenoide fallando</li>
+    <li>Sensor dañado</li>
+    <li>ATF extremadamente sucio</li>
+    <li>Códigos de convertidor</li>
+    <li>TCM dañado</li>
+  </ul>
+
+  <p><strong>Solución:</strong> Reparar la causa + reset adaptativo.</p>
+</div>
+
+<div class="card">
+  <h2>¿Cuándo sospechar que el TCM está fallando?</h2>
+  <ul>
+    <li>La transmisión hace cambios extraños sin códigos</li>
+    <li>Datos en vivo incoherentes</li>
+    <li>P0740 o P0730 persistentes sin razón</li>
+    <li>Golpes después de reset</li>
+    <li>Transmisión sin respuesta al acelerar</li>
+    <li>Calentamiento inexplicable</li>
+  </ul>
+
+  <p>
+    El TCM también puede fallar por problemas de humedad o corrosión en el arnés.
+  </p>
+</div>
+
+<div class="card">
+  <h2>Herramientas recomendadas</h2>
+  <ul>
+    <li><a href="#" target="_blank">Escáner compatible con TCM (Amazon)</a></li>
+    <li><a href="#" target="_blank">Multímetro digital</a></li>
+    <li><a href="#" target="_blank">ATF correcto para tu vehículo</a></li>
+  </ul>
+</div>
+
+<p><a href="/blog/index.html">⬅ Volver al índice del blog</a></p>
+
+</body>
+</html>
