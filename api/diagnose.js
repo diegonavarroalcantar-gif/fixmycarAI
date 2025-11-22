@@ -1,6 +1,6 @@
 // ======================================
 // FixMyCarAI – diagnose.js PRO FINAL
-// Con runtime NodeJS y fetch corregido
+// Con runtime NodeJS + limpiador HTML
 // ======================================
 
 export const config = {
@@ -36,7 +36,7 @@ const GUIDE_MAP = [
   { key: ["p0", "p1", "p2", "p3"], guide: "obd2/interpretar-codigos-obd2.html" },
 
   // Transmisión (nuevo)
-  { key: ["transmision", "p074", "p075", "p076", "slip", "patina", "golpea cambio"], guide: "transmision/diagnosticar-transmision.html" }
+  { key: ["transmision", "patina", "p074", "p075", "p076", "slip", "golpea cambio"], guide: "transmision/diagnosticar-transmision.html" }
 ];
 
 // -------------------------------
@@ -68,11 +68,15 @@ export async function POST(req) {
       return new Response(JSON.stringify({ error: "No symptoms provided" }), { status: 400 });
     }
 
+    // -------------------------------------------------
     // 1️⃣ Detectar la guía basada en palabras clave
+    // -------------------------------------------------
     const guidePath = detectGuide(message);
     let guideContent = "";
 
-    // 2️⃣ Descargar la guía real desde tu blog
+    // -------------------------------------------------
+    // 2️⃣ Descargar & limpiar la guía HTML
+    // -------------------------------------------------
     if (guidePath) {
       const url = BLOG_BASE + guidePath;
 
@@ -81,27 +85,39 @@ export async function POST(req) {
           headers: { "User-Agent": "FixMyCarAI" }
         });
 
-        guideContent = await res.text();
+        const html = await res.text();
+
+        // LIMPIADOR HTML PRO (evita tokens altos)
+        guideContent = html
+          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
       } catch (err) {
         console.error("Error fetching guide:", err);
       }
     }
 
-    // 3️⃣ Construcción del prompt profesional
+    // -------------------------------------------------
+    // 3️⃣ Prompt PROFESIONAL optimizado para transmisión
+    // -------------------------------------------------
     const prompt = `
 Eres FixMyCarAI PRO, un asistente de diagnóstico automotriz profesional.
-Tu trabajo es analizar los síntomas con alta precisión.
 
-### SI EXISTE UNA GUÍA, ÚSALA COMO BASE TÉCNICA OBLIGATORIA.
-### NO INVENTES datos fuera de ella.
+Tu objetivo:
+- Diagnóstico certero y detallado
+- Basado en las guías técnicas proporcionadas
+- NO inventes cosas fuera de la guía
 
-Guía técnica cargada:
+Guía técnica cargada (limpia):
 ${guideContent || "No guide found"}
 
 Síntomas del usuario:
 ${message}
 
-Responde con:
+Devuelve SIEMPRE:
 1. Posibles causas más probables
 2. Acciones recomendadas
 3. Qué revisar primero
@@ -109,7 +125,9 @@ Responde con:
 5. Advertencias técnicas importantes
     `;
 
-    // 4️⃣ Llamada al modelo OpenAI
+    // -------------------------------------------------
+    // 4️⃣ Llamada al modelo OpenAI (estable)
+    // -------------------------------------------------
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.2,
