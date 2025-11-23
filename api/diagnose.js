@@ -1,7 +1,7 @@
 // ======================================
 // FixMyCarAI – /api/diagnose.js
-// Versión estable, compatible con Vercel Node.js 22.x
-// y con tu frontend actual (envía { message: "..." }).
+// Versión con guía + videos + diagnóstico estructurado
+// 100% compatible con tu frontend actual
 // ======================================
 
 const OpenAI = require("openai");
@@ -10,42 +10,58 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Guías alojadas en tu propio repositorio de GitHub (RAW)
+// URL RAW del repositorio
 const RAW_BASE =
   "https://raw.githubusercontent.com/diegonavarroalcantar-gif/fixmycarAI/main/blog/posts/";
 
-// Palabras clave -> ruta de guía
+// Definición de guías mejorada
 const GUIDE_MAP = [
   {
-    key: ["transmision", "patina", "patea", "slip", "sobrecalentamiento transmision"],
-    guide: "transmision/diagnosticar-transmision.html"
+    key: ["transmision", "patina", "patea", "slip", "sobrecalentamiento"],
+    guide: "transmision/diagnosticar-transmision.html",
+    title: "Diagnosticar transmisión automática",
+    videos: [
+      "https://www.youtube.com/watch?v=Hh8C8cIPFso",
+      "https://www.youtube.com/watch?v=K6cSsN8K6uA"
+    ]
   },
   {
     key: ["misfire", "rateo", "bujia", "bobina", "p030"],
-    guide: "encendido/diagnosticar-encendido.html"
+    guide: "encendido/diagnosticar-encendido.html",
+    title: "Diagnosticar sistema de encendido",
+    videos: [
+      "https://www.youtube.com/watch?v=9tFnZEcRJaQ",
+      "https://www.youtube.com/watch?v=I1nKxJt2YKw"
+    ]
   },
   {
     key: ["bomba", "gasolina", "inyector", "falta de potencia"],
-    guide: "combustible/diagnosticar-combustible.html"
+    guide: "combustible/diagnosticar-combustible.html",
+    title: "Diagnosticar sistema de combustible",
+    videos: [
+      "https://www.youtube.com/watch?v=YEYHsU6E4xQ"
+    ]
   },
   {
     key: ["sobrecalienta", "temperatura", "antifreeze", "anticongelante"],
-    guide: "enfriamiento/diagnosticar-enfriamiento.html"
+    guide: "enfriamiento/diagnosticar-enfriamiento.html",
+    title: "Diagnosticar sistema de enfriamiento",
+    videos: [
+      "https://www.youtube.com/watch?v=9v5dDtxZJzY"
+    ]
   }
 ];
 
-// Detectar guía según texto de síntomas
+// Detectar mejor guía según texto
 function detectGuide(text) {
   text = (text || "").toLowerCase();
   for (const g of GUIDE_MAP) {
-    if (g.key.some(k => text.includes(k))) {
-      return g.guide;
-    }
+    if (g.key.some(k => text.includes(k))) return g;
   }
   return null;
 }
 
-// Handler para Vercel (CommonJS)
+// Handler
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
@@ -53,25 +69,32 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const body = req.body || {};
-    const symptoms = body.message ? String(body.message) : "";
+    const symptoms = req.body?.message || "";
 
     if (!symptoms) {
       res.status(400).json({ error: "Missing message" });
       return;
     }
 
-    // 1) Detectar guía
-    const guidePath = detectGuide(symptoms);
+    // --------------------------
+    // 1) Detectar guía relacionada
+    // --------------------------
+    const g = detectGuide(symptoms);
     let guideContent = "";
+    let guide_url = null;
+    let videos = [];
+    let guide_title = null;
 
-    if (guidePath) {
+    if (g) {
+      const rawUrl = RAW_BASE + g.guide;
+      guide_url = "https://fixmycar-ai-three.vercel.app/blog/posts/" + g.guide;
+      videos = g.videos;
+      guide_title = g.title;
+
       try {
-        const url = RAW_BASE + guidePath;
-        const r = await fetch(url);
-        if (r.ok) {
-          const html = await r.text();
-          // Limpiar HTML -> solo texto
+        const fetchRaw = await fetch(rawUrl);
+        if (fetchRaw.ok) {
+          const html = await fetchRaw.text();
           guideContent = html
             .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
             .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
@@ -79,35 +102,29 @@ module.exports = async function handler(req, res) {
             .replace(/\s+/g, " ")
             .trim();
         }
-      } catch (e) {
-        console.error("Error leyendo guía:", e);
+      } catch (err) {
+        console.error("Error leyendo RAW:", err);
       }
     }
 
+    // --------------------------
     // 2) Prompt al modelo
+    // --------------------------
     const prompt = `
-Eres FixMyCarAI, experto en diagnóstico automotriz.
+Eres FixMyCarAI, diagnostico automotriz experto.
 
 Síntomas del usuario:
 ${symptoms}
 
-Resumen técnico de la guía relacionada:
-${guideContent || "Sin guía disponible, usa tu criterio general de mecánica automotriz."}
+Resumen técnico de guía relacionada:
+${guideContent || "Sin guía disponible."}
 
-Responde SOLO en JSON válido con esta estructura exacta:
+Responde SOLO con JSON válido:
 
 {
-  "hypotheses": [
-    "Posible causa 1",
-    "Posible causa 2"
-  ],
-  "actions": [
-    "Acción recomendada 1",
-    "Acción recomendada 2"
-  ],
-  "common_failures": [
-    "Falla común relacionada 1"
-  ],
+  "hypotheses": [],
+  "actions": [],
+  "common_failures": [],
   "tsbs": [],
   "recalls": [],
   "nhtsa_alerts": []
@@ -120,19 +137,23 @@ Responde SOLO en JSON válido con esta estructura exacta:
       messages: [{ role: "user", content: prompt }]
     });
 
-    const raw = completion.choices[0].message.content || "";
     let parsed;
-
     try {
-      parsed = JSON.parse(raw);
-    } catch (e) {
-      // Si no viene JSON perfecto, devolvemos el texto crudo
-      parsed = { raw };
+      parsed = JSON.parse(completion.choices[0].message.content);
+    } catch {
+      parsed = { raw: completion.choices[0].message.content };
     }
+
+    // --------------------------
+    // 3) Agregar guía + videos
+    // --------------------------
+    parsed.guide_url = guide_url;
+    parsed.guide_title = guide_title;
+    parsed.videos = videos;
 
     res.status(200).json(parsed);
   } catch (err) {
-    console.error("Error en /api/diagnose:", err);
+    console.error("ERROR /api/diagnose:", err);
     res.status(500).json({ error: "server_error" });
   }
 };
