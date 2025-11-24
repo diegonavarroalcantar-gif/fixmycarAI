@@ -1,20 +1,14 @@
-import json, os
-
-content = {
+{
   "version": 2,
   "builds": [
-    {"src": "api/diagnose.js", "use": "@vercel/node"},
-    {"src": "index.html", "use": "@vercel/static"},
-    {"src": "blog/**/*", "use": "@vercel/static"}
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "style.css", "use": "@vercel/static" },
+    { "src": "blog/**/*", "use": "@vercel/static" },
+    { "src": "api/diagnose.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {"src": "/api/diagnose", "dest": "/api/diagnose.js"},
-    {"src": "/blog/(.*)", "dest": "/blog/$1"}
+    { "src": "/api/diagnose", "dest": "/api/diagnose.js" },
+    { "src": "/blog/(.*)", "dest": "/blog/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
-
-path = "/mnt/data/vercel.json"
-with open(path, "w") as f:
-    json.dump(content, f, indent=2)
-
-path
