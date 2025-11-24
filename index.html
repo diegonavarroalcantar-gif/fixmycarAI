@@ -1,70 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>FixMyCar AI — Diagnóstico Automotriz Inteligente</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FixMyCar AI</title>
+    <link rel="stylesheet" href="/style.css" />
 </head>
+
 <body>
-  <div class="app">
-    <header class="app-header">
-      <div class="logo">
-        🔧 FixMyCar <span>AI</span>
-      </div>
-      <div class="subtitle">
-        Diagnóstico inteligente + guías de reparación paso a paso
-      </div>
-      <a class="blog-link" href="/blog/index.html" target="_blank">
-        📘 Ver blog de guías FixMyCarAI
-      </a>
+    <header>
+        <h1>🔧 FixMyCar <span class="ai">AI</span></h1>
+        <p>Diagnóstico inteligente + guías de reparación paso a paso</p>
+        <a class="blog-link" href="/blog/index.html">📘 Ver blog de guías FixMyCarAI</a>
     </header>
 
-    <main class="app-main">
-      <section class="left-panel">
-        <h2>Describe el problema de tu vehículo</h2>
-        <form id="diagnose-form" class="form">
-          <label for="vin">Vehículo (año, marca, modelo o VIN)</label>
-          <input
-            type="text"
-            id="vin"
-            name="vin"
-            placeholder="Ej. Ford Lobo 2005 5.4 Tritón"
-            required
-          />
+    <main>
+        <section class="input-section">
+            <h2>Describe el problema de tu vehículo</h2>
 
-          <label for="symptoms">Síntomas / descripción del problema</label>
-          <textarea
-            id="symptoms"
-            name="symptoms"
-            rows="5"
-            placeholder="Ej. Se jalonea al acelerar, tiembla en ralentí y enciende Check Engine con código P0303..."
-            required
-          ></textarea>
+            <label>Vehículo (año, marca, modelo o VIN)</label>
+            <input id="vehicle" type="text" placeholder="Ej. Ford Lobo 2005 Tritón 5.4" />
 
-          <button type="submit" class="btn-primary">
-            🚗 Analizar con FixMyCar AI
-          </button>
-        </form>
+            <label>Síntomas / descripción del problema</label>
+            <textarea id="symptoms" placeholder="Ej. patina transmisión en 3ra..."></textarea>
 
-        <p class="hint">
-          <strong>Tip:</strong> mientras más detalles des (síntomas, códigos OBD2, condiciones
-          en las que falla), mejor será el diagnóstico.
-        </p>
-      </section>
+            <button id="analyzeBtn">🚗 Analizar con FixMyCar AI</button>
+            <small>Tip: mientras más detalles des, mejor el diagnóstico.</small>
+        </section>
 
-      <section class="chat-panel">
-        <h2>Chat de diagnóstico</h2>
-        <div id="chat" class="chat"></div>
-      </section>
+        <section class="chat-section">
+            <h2>Chat de diagnóstico</h2>
+            <div id="chat"></div>
+        </section>
     </main>
 
-    <footer class="app-footer">
-      FixMyCarAI · Proyecto experimental de diagnóstico automotriz con IA ·
-      <a href="/blog/index.html" target="_blank">Guías de reparación</a>
-    </footer>
-  </div>
+<script>
+document.getElementById("analyzeBtn").onclick = async () => {
+    const vehicle = document.getElementById("vehicle").value.trim();
+    const symptoms = document.getElementById("symptoms").value.trim();
+    const chat = document.getElementById("chat");
 
-  <script src="app.js"></script>
+    chat.innerHTML += `<div class="msg user"><strong>Tú:</strong> Vehículo: ${vehicle}<br> Síntomas: ${symptoms}</div>`;
+    chat.innerHTML += `<div class="msg ai"><strong>FixMyCar AI:</strong> ⏳ Analizando... por favor espera unos segundos.</div>`;
+
+    const res = await fetch("/api/diagnose", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: symptoms })
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+        chat.innerHTML += `<div class="msg ai error">⚠️ Error conectando al servidor. Inténtalo nuevamente.</div>`;
+        return;
+    }
+
+    const html = `
+        <div class="msg ai">
+            <strong>FixMyCar AI:</strong><br>
+            <h4>Posibles causas:</h4>
+            <ul>${(data.hypotheses || []).map(v => `<li>${v}</li>`).join("")}</ul>
+
+            <h4>Acciones recomendadas:</h4>
+            <ul>${(data.actions || []).map(v => `<li>${v}</li>`).join("")}</ul>
+
+            <h4>Fallas comunes del modelo:</h4>
+            <ul>${(data.common_failures || []).map(v => `<li>${v}</li>`).join("")}</ul>
+        </div>
+    `;
+
+    chat.innerHTML += html;
+};
+</script>
+
 </body>
 </html>
