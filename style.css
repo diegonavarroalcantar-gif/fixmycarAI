@@ -1,63 +1,41 @@
 body {
-  background: #0d1117;
-  color: #fff;
   font-family: Arial, sans-serif;
-  padding: 20px;
+  margin: 0;
+  background: #111827;
+  color: white;
 }
 
 header {
   text-align: center;
-  margin-bottom: 30px;
+  padding: 20px;
 }
 
-.ai {
-  color: #00c0ff;
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
 }
 
-.blog-link {
-  display: inline-block;
-  margin-top: 10px;
-  color: #00c0ff;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #333;
-  background: #161b22;
-  color: #fff;
+.input-section, .chat-section {
+  background: #1f2937;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 button {
   width: 100%;
-  background: #00c06b;
-  color: #000;
-  padding: 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.chat-section {
-  margin-top: 40px;
-}
-
-.msg {
-  background: #161b22;
   padding: 12px;
-  border-radius: 6px;
+  background: #10b981;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#chat div {
+  background: #374151;
+  padding: 10px;
   margin-bottom: 10px;
-}
-
-.msg.user {
-  background: #1f6feb;
-}
-
-.error {
-  background: #b00020;
+  border-radius: 8px;
 }
