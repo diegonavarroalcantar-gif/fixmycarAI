@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/diagnose.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "blog/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/diagnose",
+      "dest": "/api/diagnose.js"
+    },
+    {
+      "src": "/blog/(.*)",
+      "dest": "/blog/$1"
+    }
+  ]
+}
