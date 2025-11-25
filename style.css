@@ -1,41 +1,98 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #111827;
-  color: white;
-}
-
-header {
-  text-align: center;
-  padding: 20px;
-}
-
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 20px;
-}
-
-.input-section, .chat-section {
-  background: #1f2937;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background: #10b981;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-#chat div {
-  background: #374151;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-}
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/style.css b/style.css
+index 2a823069702944ba4f52caaf51afdac4c52372e7..12f1a72278633b1a1fd4840b021ed7290a4f4993 100644
+--- a/style.css
++++ b/style.css
+@@ -1,41 +1,84 @@
+ body {
+   font-family: Arial, sans-serif;
+   margin: 0;
+   background: #111827;
+   color: white;
+ }
+ 
+ header {
+   text-align: center;
+   padding: 20px;
+ }
+ 
+ .container {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 20px;
+   padding: 20px;
+ }
+ 
++.note {
++  color: #9ca3af;
++  font-size: 14px;
++  margin-top: 6px;
++}
++
+ .input-section, .chat-section {
+   background: #1f2937;
+   padding: 20px;
+   border-radius: 10px;
+ }
+ 
++label {
++  display: block;
++  font-weight: bold;
++  margin-top: 12px;
++}
++
++input, textarea {
++  width: 100%;
++  padding: 10px;
++  margin-top: 6px;
++  border-radius: 8px;
++  border: 1px solid #374151;
++  background: #111827;
++  color: #e5e7eb;
++}
++
++textarea {
++  min-height: 120px;
++  resize: vertical;
++}
++
+ button {
+   width: 100%;
+   padding: 12px;
+   background: #10b981;
+   border: none;
+   border-radius: 8px;
+   font-size: 16px;
+   cursor: pointer;
+ }
+ 
+-#chat div {
+-  background: #374151;
+-  padding: 10px;
+-  margin-bottom: 10px;
+-  border-radius: 8px;
++#chat {
++  max-height: 480px;
++  overflow-y: auto;
++}
++
++.msg-user, .msg-bot {
++  padding: 12px;
++  margin-bottom: 12px;
++  border-radius: 10px;
++  line-height: 1.4;
++}
++
++.msg-user {
++  background: #1d4ed8;
++  color: #e5e7eb;
++  border: 1px solid #3b82f6;
++}
++
++.msg-bot {
++  background: #111827;
++  border: 1px solid #374151;
+ }
+ 
+EOF
+)
