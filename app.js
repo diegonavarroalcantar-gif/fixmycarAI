@@ -1,5 +1,5 @@
 // ============================
-// FixMyCarAI - frontend simple
+// FixMyCarAI - FRONTEND
 // ============================
 
 const chatBox = document.getElementById("chat");
@@ -22,11 +22,13 @@ analyzeBtn.addEventListener("click", async () => {
     return;
   }
 
+  // Mensaje del usuario
   addMessage(
     "user",
     `<strong>Vehículo:</strong> ${vehicle || "(no especificado)"}<br><strong>Síntomas:</strong> ${message}`
   );
 
+  // Mensaje de “cargando”
   addMessage("bot", "🔎 Analizando... por favor espera unos segundos.");
 
   try {
