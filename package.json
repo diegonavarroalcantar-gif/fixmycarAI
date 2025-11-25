@@ -1,9 +1,11 @@
 {
   "name": "fixmycarai",
   "version": "1.0.0",
-  "description": "FixMyCar AI - app estática + API de diagnóstico",
-  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "vercel dev"
+  },
   "dependencies": {
-    "openai": "^4.26.0"
+    "openai": "^4.56.0"
   }
 }
