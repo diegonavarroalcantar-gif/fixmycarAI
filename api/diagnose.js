@@ -1,170 +1,122 @@
-// ======================================
-// FixMyCarAI – /api/diagnose.js
-// Backend estable con guías + videos
-// ======================================
+// ===============================
+// FixMyCarAI - /api/diagnose.js
+// Node.js (CommonJS) para Vercel
+// ===============================
 
 const OpenAI = require("openai");
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Guías RAW desde tu repo (para contexto de IA)
-const RAW_BASE =
-  "https://raw.githubusercontent.com/diegonavarroalcantar-gif/fixmycarAI/main/blog/posts/";
-
-// Palabras clave -> guía + videos
+// Mapa simple para elegir guía según palabras clave
 const GUIDE_MAP = [
   {
-    key: [
-      "transmision",
-      "transmisión",
-      "patina",
-      "patinamiento",
-      "patea",
-      "slip",
-      "sobrecalentamiento transmision",
-      "sobrecalentamiento de la transmision"
-    ],
-    guide: "transmision/diagnosticar-transmision.html",
-    videos: [
-      "https://www.youtube.com/results?search_query=patina+transmision+automatica+diagnostico",
-      "https://www.youtube.com/results?search_query=verificar+nivel+aceite+transmision+automatica"
-    ]
+    keys: ["transmision", "transmisión", "patina", "patea", "slip", "sobrecalentamiento transmision"],
+    guide: "/blog/posts/transmision/diagnosticar-transmision.html",
   },
   {
-    key: ["misfire", "rateo", "bujia", "bujías", "bobina", "bobinas", "p030"],
-    guide: "encendido/diagnosticar-encendido.html",
-    videos: [
-      "https://www.youtube.com/results?search_query=diagnosticar+misfire+motor+gasolina",
-      "https://www.youtube.com/results?search_query=prueba+de+bobinas+de+encendido"
-    ]
+    keys: ["misfire", "rateo", "bujia", "bobina", "p030"],
+    guide: "/blog/posts/encendido/diagnosticar-encendido.html",
   },
   {
-    key: [
-      "bomba gasolina",
-      "bomba de gasolina",
-      "falta de potencia",
-      "se apaga al acelerar",
-      "inyector",
-      "inyectores"
-    ],
-    guide: "combustible/diagnosticar-combustible.html",
-    videos: [
-      "https://www.youtube.com/results?search_query=como+diagnosticar+bomba+de+gasolina",
-      "https://www.youtube.com/results?search_query=prueba+de+inyectores+gasolina"
-    ]
+    keys: ["bomba", "gasolina", "inyector", "falta de potencia"],
+    guide: "/blog/posts/combustible/diagnosticar-combustible.html",
   },
   {
-    key: [
-      "se calienta",
-      "sobrecalienta",
-      "temperatura alta",
-      "hierve",
-      "anticongelante",
-      "antifreeze",
-      "no prenden los ventiladores"
-    ],
-    guide: "enfriamiento/diagnosticar-enfriamiento.html",
-    videos: [
-      "https://www.youtube.com/results?search_query=diagnosticar+sobrecalentamiento+motor",
-      "https://www.youtube.com/results?search_query=ventilador+radiador+no+enciende+diagnostico"
-    ]
-  }
+    keys: ["sobrecalienta", "temperatura", "antifreeze", "anticongelante"],
+    guide: "/blog/posts/enfriamiento/diagnosticar-enfriamiento.html",
+  },
 ];
 
-function detectGuide(text) {
-  const t = (text || "").toLowerCase();
+function detectGuide(symptoms) {
+  const text = (symptoms || "").toLowerCase();
   for (const g of GUIDE_MAP) {
-    if (g.key.some(k => t.includes(k))) {
-      return g;
+    if (g.keys.some((k) => text.includes(k))) {
+      return g.guide;
     }
   }
   return null;
 }
 
+// Handler para Vercel (CommonJS)
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    res.status(405).json({ error: "Method not allowed" });
+    return;
   }
 
   try {
-    const symptoms = (req.body && req.body.message) || "";
+    const body = req.body || {};
+    const vehicle = body.vehicle || "";
+    const symptoms = body.message || "";
 
     if (!symptoms) {
-      return res.status(400).json({ error: "Missing message" });
+      res.status(400).json({ error: "Missing message" });
+      return;
     }
 
-    const match = detectGuide(symptoms);
-    let guideContent = "";
-    let guideUrl = null;
-    let videoLinks = [];
+    const guidePath = detectGuide(symptoms);
+    const guide_url = guidePath ? guidePath : null;
 
-    if (match) {
-      guideUrl = `/blog/posts/${match.guide}`;
-      videoLinks = match.videos || [];
-
-      try {
-        const r = await fetch(RAW_BASE + match.guide);
-        if (r.ok) {
-          const html = await r.text();
-          guideContent = html
-            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
-            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-            .replace(/<[^>]+>/g, " ")
-            .replace(/\s+/g, " ")
-            .trim();
-        }
-      } catch (e) {
-        console.error("Error leyendo guía RAW:", e);
-      }
-    }
+    const youtubeQuery = encodeURIComponent(
+      `diagnosticar ${symptoms} ${vehicle} paso a paso`
+    );
+    const video_url = `https://www.youtube.com/results?search_query=${youtubeQuery}`;
 
     const prompt = `
-Eres FixMyCarAI, experto en diagnóstico automotriz.
+Eres FixMyCarAI, experto en diagnóstico automotriz. 
 
-Síntomas del usuario:
+Vehículo:
+${vehicle}
+
+Síntomas:
 ${symptoms}
 
-Resumen técnico de la guía relacionada (si existe):
-${guideContent || "Sin guía disponible, usa tu criterio profesional de mecánico."}
-
-Responde SOLO en JSON válido con esta estructura EXACTA:
+Devuelve SOLO JSON válido con esta estructura exacta:
 
 {
-  "hypotheses": ["..."],
-  "actions": ["..."],
-  "common_failures": ["..."],
-  "tsbs": [],
-  "recalls": [],
-  "nhtsa_alerts": []
+  "hypotheses": [
+    "Posible causa 1",
+    "Posible causa 2"
+  ],
+  "actions": [
+    "Acción recomendada 1",
+    "Acción recomendada 2"
+  ],
+  "common_failures": [
+    "Falla común relacionada 1"
+  ]
 }
 `.trim();
 
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.2,
-      messages: [{ role: "user", content: prompt }]
+      messages: [{ role: "user", content: prompt }],
     });
 
-    const raw = completion.choices[0].message.content || "";
-    let base;
-
+    const content = completion.choices[0].message.content || "";
+    let parsed;
     try {
-      base = JSON.parse(raw);
-    } catch {
-      base = { raw };
+      parsed = JSON.parse(content);
+    } catch (e) {
+      parsed = {
+        hypotheses: [],
+        actions: [],
+        common_failures: [],
+      };
     }
 
-    const payload =
-      base && typeof base === "object" ? { ...base } : { raw: String(raw) };
-
-    if (guideUrl) payload.guide_url = guideUrl;
-    if (videoLinks.length) payload.video_links = videoLinks;
-
-    return res.status(200).json(payload);
-  } catch (e) {
-    console.error("Error en /api/diagnose:", e);
-    return res.status(500).json({ error: "server_error" });
+    res.status(200).json({
+      hypotheses: parsed.hypotheses || [],
+      actions: parsed.actions || [],
+      common_failures: parsed.common_failures || [],
+      guide_url,
+      video_url,
+    });
+  } catch (err) {
+    console.error("Error en /api/diagnose:", err);
+    res.status(500).json({ error: "server_error" });
   }
 };
