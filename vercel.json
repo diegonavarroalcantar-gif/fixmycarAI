@@ -1,14 +1,11 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/diagnose.js", "use": "@vercel/node" },
     { "src": "index.html", "use": "@vercel/static" },
-    { "src": "style.css", "use": "@vercel/static" },
-    { "src": "app.js", "use": "@vercel/static" },
-    { "src": "blog/**/*", "use": "@vercel/static" }
+    { "src": "blog/**", "use": "@vercel/static" },
+    { "src": "api/diagnose.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/diagnose", "dest": "/api/diagnose.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "^/api/diagnose$", "dest": "/api/diagnose.js" }
   ]
 }
