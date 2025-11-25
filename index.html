@@ -1,63 +1,117 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixMyCar AI</title>
-    <link rel="stylesheet" href="/style.css">
-
-    <style>
-        header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        header img {
-            height: 60px;
-        }
-    </style>
-</head>
-
-<body>
-
-<header>
-    <img src="https://i.imgur.com/9noXb4P.png" alt="FixMyCar Logo">
-    <h1>FixMyCar AI</h1>
-</header>
-
-<p>Diagnóstico inteligente + guías de reparación paso a paso</p>
-
-<a href="/blog/index.html">📘 Ver blog de guías FixMyCarAI</a>
-
-<section>
-    <h2>Describe el problema de tu vehículo</h2>
-
-    <label>Vehículo (año, marca, modelo o VIN)</label>
-    <input id="vehicle" type="text" placeholder="Ej. Ford Lobo 2005 5.4 Tritón" />
-
-    <label>Síntomas / descripción del problema</label>
-    <textarea id="symptoms" placeholder="Ej. Se jalonea en 3ra, patina la transmisión, marca sobrecalentamiento..."></textarea>
-
-    <button onclick="send()">🚗 Analizar con FixMyCar AI</button>
-</section>
-
-<h2>Chat de diagnóstico</h2>
-<div id="chat"></div>
-
-<script>
-async function send() {
-    const message = document.getElementById("symptoms").value;
-
-    const res = await fetch("/api/diagnose", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-    });
-
-    const data = await res.json();
-    document.getElementById("chat").innerText = JSON.stringify(data, null, 2);
-}
-</script>
-
-</body>
-</html>
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/index.html b/index.html
+index e65b1d1fc80eb60a40574ad5c6bd892c0e710c24..444326f73a1ca814a30de8f3cffdbf26b34689b2 100644
+--- a/index.html
++++ b/index.html
+@@ -1,63 +1,62 @@
+ <!DOCTYPE html>
+ <html lang="es">
+ <head>
+-    <meta charset="UTF-8">
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-    <title>FixMyCar AI</title>
+-    <link rel="stylesheet" href="/style.css">
+-
+-    <style>
+-        header {
+-            display: flex;
+-            align-items: center;
+-            gap: 10px;
+-        }
+-        header img {
+-            height: 60px;
+-        }
+-    </style>
++  <meta charset="UTF-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++  <title>FixMyCar AI</title>
++  <link rel="stylesheet" href="/style.css" />
++
++  <style>
++    header {
++      display: flex;
++      align-items: center;
++      gap: 10px;
++    }
++
++    header img {
++      height: 60px;
++    }
++  </style>
+ </head>
+ 
+ <body>
+-
+-<header>
+-    <img src="https://i.imgur.com/9noXb4P.png" alt="FixMyCar Logo">
++  <header>
++    <img src="https://i.imgur.com/9noXb4P.png" alt="FixMyCar Logo" />
+     <h1>FixMyCar AI</h1>
+-</header>
+-
+-<p>Diagnóstico inteligente + guías de reparación paso a paso</p>
+-
+-<a href="/blog/index.html">📘 Ver blog de guías FixMyCarAI</a>
+-
+-<section>
+-    <h2>Describe el problema de tu vehículo</h2>
++  </header>
+ 
+-    <label>Vehículo (año, marca, modelo o VIN)</label>
+-    <input id="vehicle" type="text" placeholder="Ej. Ford Lobo 2005 5.4 Tritón" />
++  <p>Diagnóstico inteligente + guías de reparación paso a paso</p>
+ 
+-    <label>Síntomas / descripción del problema</label>
+-    <textarea id="symptoms" placeholder="Ej. Se jalonea en 3ra, patina la transmisión, marca sobrecalentamiento..."></textarea>
++  <a href="/blog/index.html">📘 Ver blog de guías FixMyCarAI</a>
+ 
+-    <button onclick="send()">🚗 Analizar con FixMyCar AI</button>
+-</section>
++  <main class="container">
++    <section class="input-section">
++      <h2>Describe el problema de tu vehículo</h2>
+ 
+-<h2>Chat de diagnóstico</h2>
+-<div id="chat"></div>
++      <label for="vehicle">Vehículo (año, marca, modelo o VIN)</label>
++      <input
++        id="vehicle"
++        type="text"
++        placeholder="Ej. Ford Lobo 2005 5.4 Tritón"
++        autocomplete="off"
++      />
+ 
+-<script>
+-async function send() {
+-    const message = document.getElementById("symptoms").value;
++      <label for="message">Síntomas / descripción del problema</label>
++      <textarea
++        id="message"
++        placeholder="Ej. Se jalonea en 3ra, patina la transmisión, marca sobrecalentamiento..."
++      ></textarea>
+ 
+-    const res = await fetch("/api/diagnose", {
+-        method: "POST",
+-        headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ message })
+-    });
++      <button id="analyzeBtn">🚗 Analizar con FixMyCar AI</button>
++      <p class="note">Los síntomas se envían a la API de diagnóstico para generar hipótesis y guías.</p>
++    </section>
+ 
+-    const data = await res.json();
+-    document.getElementById("chat").innerText = JSON.stringify(data, null, 2);
+-}
+-</script>
++    <section class="chat-section">
++      <h2>Chat de diagnóstico</h2>
++      <div id="chat" class="chat-box"></div>
++    </section>
++  </main>
+ 
++  <script src="/app.js"></script>
+ </body>
+ </html>
+ 
+EOF
+)
