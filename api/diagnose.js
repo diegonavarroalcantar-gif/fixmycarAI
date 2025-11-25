@@ -1,19 +1,19 @@
 // ======================================
 // FixMyCarAI – /api/diagnose.js
-// Versión estable con enlaces a guías y videos
+// Backend estable con guías + videos
 // ======================================
 
 const OpenAI = require("openai");
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
-// Guías RAW desde tu repo (solo para extraer contexto en texto plano)
+// Guías RAW desde tu repo (para contexto de IA)
 const RAW_BASE =
   "https://raw.githubusercontent.com/diegonavarroalcantar-gif/fixmycarAI/main/blog/posts/";
 
-// Palabras clave -> guía del blog + búsquedas de video
+// Palabras clave -> guía + videos
 const GUIDE_MAP = [
   {
     key: [
@@ -26,7 +26,7 @@ const GUIDE_MAP = [
       "sobrecalentamiento transmision",
       "sobrecalentamiento de la transmision"
     ],
-    guide: "diagnosticar-transmision.html",
+    guide: "transmision/diagnosticar-transmision.html",
     videos: [
       "https://www.youtube.com/results?search_query=patina+transmision+automatica+diagnostico",
       "https://www.youtube.com/results?search_query=verificar+nivel+aceite+transmision+automatica"
@@ -73,7 +73,6 @@ const GUIDE_MAP = [
   }
 ];
 
-// Devuelve el objeto guía que mejor coincide
 function detectGuide(text) {
   const t = (text || "").toLowerCase();
   for (const g of GUIDE_MAP) {
@@ -84,7 +83,6 @@ function detectGuide(text) {
   return null;
 }
 
-// Handler para Vercel (Node.js 22, CommonJS)
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -97,7 +95,6 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: "Missing message" });
     }
 
-    // 1) Detectar guía relacionada
     const match = detectGuide(symptoms);
     let guideContent = "";
     let guideUrl = null;
@@ -123,14 +120,13 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // 2) Llamar al modelo de OpenAI
     const prompt = `
 Eres FixMyCarAI, experto en diagnóstico automotriz.
 
 Síntomas del usuario:
 ${symptoms}
 
-Resumen técnico de la guía del blog (si existe):
+Resumen técnico de la guía relacionada (si existe):
 ${guideContent || "Sin guía disponible, usa tu criterio profesional de mecánico."}
 
 Responde SOLO en JSON válido con esta estructura EXACTA:
@@ -153,22 +149,18 @@ Responde SOLO en JSON válido con esta estructura EXACTA:
 
     const raw = completion.choices[0].message.content || "";
     let base;
+
     try {
       base = JSON.parse(raw);
     } catch {
       base = { raw };
     }
 
-    // 3) Añadir info de guía y videos al objeto de salida
     const payload =
       base && typeof base === "object" ? { ...base } : { raw: String(raw) };
 
-    if (guideUrl) {
-      payload.guide_url = guideUrl;
-    }
-    if (videoLinks.length) {
-      payload.video_links = videoLinks;
-    }
+    if (guideUrl) payload.guide_url = guideUrl;
+    if (videoLinks.length) payload.video_links = videoLinks;
 
     return res.status(200).json(payload);
   } catch (e) {
